@@ -89,7 +89,8 @@ namespace FileTrackingSystem.Web
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+            app.UseAuthentication();
+            app.UseSession();
             app.UseRouting();
 
             app.UseAuthorization();

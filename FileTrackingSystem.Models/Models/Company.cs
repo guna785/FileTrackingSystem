@@ -1,4 +1,5 @@
 ﻿using FileTrackingSystem.Models.BaseClass;
+using FileTrackingSystem.Models.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +26,7 @@ namespace FileTrackingSystem.Models.Models
 
         public string BankBranch { get; set; }
         public string IFSC { get; set; }
+        public StatusType status { get; set; }
         public virtual IList<Invoice> Invoices { get; set; }
         public virtual IList<Payment> Payments { get; set; }
     }

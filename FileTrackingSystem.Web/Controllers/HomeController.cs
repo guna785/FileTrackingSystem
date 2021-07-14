@@ -1,5 +1,8 @@
-﻿using FileTrackingSystem.Schema.Generator;
+﻿using FileTrackingSystem.BL.SchemaBuilder;
+using FileTrackingSystem.BL.SchemaModel;
+using FileTrackingSystem.Schema.Generator;
 using FileTrackingSystem.Web.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -10,25 +13,28 @@ using System.Threading.Tasks;
 
 namespace FileTrackingSystem.Web.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
         private readonly GSgenerator _sgenerator;
-       // private readonly EditBuilder _builder;
-        public HomeController(ILogger<HomeController> logger, GSgenerator sgenerator/*, EditBuilder builder*/)
+        private readonly EditBuilder _builder;
+        public HomeController(ILogger<HomeController> logger, GSgenerator sgenerator, EditBuilder builder)
         {
             _logger = logger;
             _sgenerator = sgenerator;
-           // _builder = builder;
+            _builder = builder;
         }
         public IActionResult Index()
         {
             return View();
         }
+        [Authorize(Roles = "SuperAdmin")]
         public IActionResult Company()
         {
             return View();
         }
+        [Authorize(Roles = "SuperAdmin")]
         public IActionResult Admins()
         {
             return View();
@@ -37,9 +43,23 @@ namespace FileTrackingSystem.Web.Controllers
         {
             return View();
         }
-        private string schema;
-        public async Task<IActionResult> PopUpModelShow(string Id)
+        private string schema="";
+        public async Task<IActionResult> PopUpModelShow(string ID)
         {
+            if (ID.Contains("AddCompany"))
+            {
+                schema = await _sgenerator.GenerateSchema<AddCompanySchema>("");
+                ViewBag.modalTitle = "AddCompany";
+            }
+            else if (ID.Contains("EditCompany"))
+            {
+                var objId = ID.Split('-')[1];
+                var data = await _builder.ReturnObjectData<EditCompanySchema>(objId == null ? 0 : Convert.ToInt32(objId));
+                ViewBag.val = Newtonsoft.Json.JsonConvert.SerializeObject(data);
+                schema = await _sgenerator.GenerateSchema<EditCompanySchema>("");
+                ViewBag.modalTitle = "EditCompany";
+            }
+            ViewBag.schema = schema;
             return View();
         }
         public IActionResult Privacy()

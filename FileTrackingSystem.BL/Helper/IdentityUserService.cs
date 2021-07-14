@@ -67,7 +67,7 @@ namespace FileTrackingSystem.BL.Helper
             var confirmationLink = "";
             try
             {
-                confirmationLink = _helper.Action("ConfirmEmail", "Email", new { token, email = appUser.Email }, httpContext.Request.Scheme);
+                confirmationLink = _helper.Action("ConfirmEmail", "Login", new { token, email = appUser.Email }, httpContext.Request.Scheme);
             }
             catch (Exception ex)
             {

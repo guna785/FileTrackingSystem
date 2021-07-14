@@ -2,28 +2,29 @@
 @{
     ViewData["Title"] = "Index";
 }
+@model FileTrackingSystem.BL.Models.LoginViewModel
 <div class="animate form login_form">
     <section class="login_content">
-        <form>
+        <form method="post" asp-action="Index" asp-controller="Login">
             <h1>Login Form</h1>
             <div>
-                <input type="text" class="form-control" placeholder="Username" required="" />
+                <input asp-for="uname" type="text" class="form-control" placeholder="Username" required="" />
             </div>
             <div>
-                <input type="password" class="form-control" placeholder="Password" required="" />
+                <input asp-for="password" type="password" class="form-control" placeholder="Password" required="" />
             </div>
             <div>
                 <button class="btn btn-primary" type="submit">Log in</button>
-                <a class="reset_pass" href="#">Lost your password?</a>
+                <a class="reset_pass" asp-action="ForgetPassword" asp-controller="Login">Lost your password?</a>
             </div>
 
             <div class="clearfix"></div>
 
             <div class="separator">
-                <p class="change_link">
+                @*<p class="change_link">
                     New to site?
                     <a asp-action="Register" asp-controller="Login" class="to_register"> Create Account </a>
-                </p>
+                </p>*@
 
                 <div class="clearfix"></div>
                 <br />

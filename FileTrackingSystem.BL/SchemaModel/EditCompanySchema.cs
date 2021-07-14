@@ -1,16 +1,17 @@
-﻿using System;
+﻿using FileTrackingSystem.Models.Enums;
+using FileTrackingSystem.Schema.Generator;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using FileTrackingSystem.Models.Enums;
-using FileTrackingSystem.Schema.Generator;
-using Newtonsoft.Json.Schema;
 
 namespace FileTrackingSystem.BL.SchemaModel
 {
-    public class AddCompanySchema
+    public class EditCompanySchema
     {
+        [GSchema("Id", "ID", "hidden", true)]
+        public int Id { get; set; }
         [GSchema("Name", "Name", "string", true, getHtmlClass = "col-md-6")]
         public string Name { get; set; }
         [GSchema("Address", "Address", "string", true, getHtmlClass = "col-md-6")]
@@ -37,7 +38,7 @@ namespace FileTrackingSystem.BL.SchemaModel
         public string BankBranch { get; set; }
         [GSchema("IFSC", "IFSC Code", "string", true, getHtmlClass = "col-md-6")]
         public string IFSC { get; set; }
-        [GSchema("status", "Status", "string", true,getEnumVal = "status", getHtmlClass = "col-md-6")]
+        [GSchema("status", "Status", "string", true, getEnumVal = "status", getHtmlClass = "col-md-6")]
         public StatusType status { get; set; }
     }
 }
