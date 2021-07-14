@@ -15,6 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json.Converters;
+using Rotativa.AspNetCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -99,6 +100,9 @@ namespace FileTrackingSystem.Web
                     name: "default",
                     pattern: "{controller=Login}/{action=Index}/{id?}");
             });
+#pragma warning disable CS0618 // Type or member is obsolete
+            RotativaConfiguration.Setup((Microsoft.AspNetCore.Hosting.IHostingEnvironment)env, "Rotativa");
+#pragma warning restore CS0618 // Type or member is obsolete
         }
     }
 }
