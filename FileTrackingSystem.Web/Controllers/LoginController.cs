@@ -112,6 +112,14 @@ namespace FileTrackingSystem.Web.Controllers
             }
         }
         [AllowAnonymous]
+        public async Task<IActionResult> ConfirmEmail(string token, string email)
+        {
+            var res = await _service.ConfirmEmail(token, email);
+
+            ViewBag.user = res ? email : "";
+            return View(res ? "ConfirmEmail" : "Error");
+        }
+        [AllowAnonymous]
         public IActionResult signout()
         {
             HttpContext.SignOutAsync(
