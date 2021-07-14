@@ -22,7 +22,23 @@ namespace FileTrackingSystem.Web.Controllers
         {
             return View();
         }
+        public IActionResult Company()
+        {
+            return View();
+        }
+        public IActionResult Admins()
+        {
+            return View();
+        }
+        public IActionResult Employee()
+        {
+            return View();
+        }
 
+        public IActionResult PopUpModelShow(string Id)
+        {
+            return View();
+        }
         public IActionResult Privacy()
         {
             return View();

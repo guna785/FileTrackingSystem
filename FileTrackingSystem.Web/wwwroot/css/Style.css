@@ -1,0 +1,58 @@
+﻿@import url("../lib/Inter/Inter-VariableFont_slnt,wght.ttf");
+body,button {
+    font-family:"Inter",sans-serif;
+}
+:root{
+    --offcanvas-width:270px;
+    --topNavbarHeight:56px;
+}
+.white{
+    color:white;
+}
+.bg-circle {
+    border-radius: 100px;
+    background:#fff;
+    color: red;
+    padding: 10px 10px;
+}
+.sidebar-link[aria-expanded="true"] .right-icon{
+    transform:rotate(180deg);
+}
+.sidebar-link{
+    display:flex;
+    align-items:center;
+}
+.sidebar-link .right-icon{
+    display:inline-flex;
+}
+.sidebar-nav {
+    width: var(--offcanvas-width);
+    top: var(--topNavbarHeight);
+    height: calc(100%-var(--topNavbarHeight));
+}
+.footer-background{
+    background:#0e95ee;
+}
+.navbar-background {
+    background: #32b8f3;
+}
+@media(min-width:992px) {
+    .sidebar-header{
+        display:none;
+    }
+    body {
+        overflow: auto !important;
+    }
+    main{
+        margin-left:var(--offcanvas-width);
+    }
+    .offcanvas-backdrop::before{
+        display:none;
+    }
+    .sidebar-nav {
+        transform: none;
+        visibility: visible !important;
+        top: var(--topNavbarHeight);
+        height: calc(100%-var(--topNavbarHeight));
+    }
+}

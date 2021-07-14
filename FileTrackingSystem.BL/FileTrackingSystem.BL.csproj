@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -12,6 +12,7 @@
   <ItemGroup>
     <ProjectReference Include="..\FileTrackingSystem.DAL\FileTrackingSystem.DAL.csproj" />
     <ProjectReference Include="..\FileTrackingSystem.Logging\FileTrackingSystem.Logging.csproj" />
+    <ProjectReference Include="..\FileTrackingSystem.Schema.Generator\FileTrackingSystem.Schema.Generator.csproj" />
   </ItemGroup>
 
 </Project>

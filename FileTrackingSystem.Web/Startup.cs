@@ -1,5 +1,6 @@
 using FileTrackingSystem.BL;
 using FileTrackingSystem.DAL;
+using FileTrackingSystem.Schema.Generator;
 using FileTrackingSystem.Web.Auth;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -34,7 +35,7 @@ namespace FileTrackingSystem.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContextService();
-           // services.AddGschemaExtentions();
+            services.AddGschemaExtentions();
             services.AddBLExtensions();
             services.AddScoped(typeof(IAuthenticateSerivce), typeof(AuthenticateSerivce));
             services.AddSession(options =>
@@ -49,9 +50,9 @@ namespace FileTrackingSystem.Web
             });
             services.AddAntiforgery(options =>
             {
-                options.Cookie.Name = "X-CSRF-TOKEN-Medical";
-                options.HeaderName = "X-CSRF-TOKEN-Medical";
-                options.FormFieldName = "X-CSRF-TOKEN-Medical";
+                options.Cookie.Name = "X-CSRF-TOKEN-FileTracking";
+                options.HeaderName = "X-CSRF-TOKEN-FileTracking";
+                options.FormFieldName = "X-CSRF-TOKEN-Filetracking";
             });
             services.AddAuthentication
                     (CookieAuthenticationDefaults.AuthenticationScheme)
@@ -96,7 +97,7 @@ namespace FileTrackingSystem.Web
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Login}/{action=Index}/{id?}");
             });
         }
     }
