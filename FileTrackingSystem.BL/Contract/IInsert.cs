@@ -10,6 +10,7 @@ namespace FileTrackingSystem.BL.Contract
     public interface IInsert
     {
         Task<bool> InsertCompany(AddCompanySchema model, string user);
-        
+        Task<bool> InsertUser(AddUserSchema model, string user);
+        Task<bool> InsertEmployee(AddEmployeeSchema model, string user);
     }
 }

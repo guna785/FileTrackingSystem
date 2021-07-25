@@ -58,9 +58,11 @@ namespace FileTrackingSystem.Web.Auth
 
         public async Task Inialize(HttpContext httpContext)
         {
-            var usr = _userManager.Users.Where(x => x.UserName == "admin").FirstOrDefault();
+            
+            var usr = _userManager.Users.Where(x => x.UserName == "root").FirstOrDefault();
             if (usr == null)
             {
+                _logger.LogInformation("Initialising First user of the Application");
                 var appUser = new ApplicationUser()
                 {
                     userType = UserType.SuperAdmin,
@@ -73,6 +75,10 @@ namespace FileTrackingSystem.Web.Auth
                 if (res.Succeeded)
                 {
                     await _service.ConfirmEmailGenerate(appUser, httpContext);
+                }
+                else
+                {
+
                 }
             }
 

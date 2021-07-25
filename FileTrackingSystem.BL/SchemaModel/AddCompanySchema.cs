@@ -11,6 +11,8 @@ namespace FileTrackingSystem.BL.SchemaModel
 {
     public class AddCompanySchema
     {
+        [GSchema("Id", "ID", "hidden", false)]
+        public int Id { get; set; }
         [GSchema("Name", "Name", "string", true, getHtmlClass = "col-md-6")]
         public string Name { get; set; }
         [GSchema("Address", "Address", "string", true, getHtmlClass = "col-md-6")]
