@@ -54,9 +54,9 @@ namespace FileTrackingSystem.Web.Controllers
             else if (ID.Contains("EditCompany"))
             {
                 var objId = ID.Split('-')[1];
-                var data = await _builder.ReturnObjectData<EditCompanySchema>(objId == null ? 0 : Convert.ToInt32(objId));
+                var data = await _builder.ReturnObjectData<AddCompanySchema>(objId == null ? 0 : Convert.ToInt32(objId));
                 ViewBag.val = Newtonsoft.Json.JsonConvert.SerializeObject(data);
-                schema = await _sgenerator.GenerateSchema<EditCompanySchema>("");
+                schema = await _sgenerator.GenerateSchema<AddCompanySchema>("");
                 ViewBag.modalTitle = "EditCompany";
             }
             ViewBag.schema = schema;

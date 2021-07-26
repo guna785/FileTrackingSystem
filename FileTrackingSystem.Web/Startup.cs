@@ -68,6 +68,11 @@ namespace FileTrackingSystem.Web
                         options.LogoutPath = "/Login/";
                         options.AccessDeniedPath = "/Login/AccesDenied";
                     });
+                    //.AddGoogle(options=>
+                    //{
+                    //    options.ClientId = "";
+                    //    options.ClientSecret = "";                       
+                    //});
             services.AddControllersWithViews().AddNewtonsoftJson(options =>
             {
                 options.SerializerSettings.Converters.Add(new StringEnumConverter());

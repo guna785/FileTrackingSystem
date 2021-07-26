@@ -17,24 +17,42 @@
                 <button class="btn btn-primary" type="submit">Log in</button>
                 <a class="reset_pass" asp-action="ForgetPassword" asp-controller="Login">Lost your password?</a>
             </div>
-
-            <div class="clearfix"></div>
-
-            <div class="separator">
-                @*<p class="change_link">
-                    New to site?
-                    <a asp-action="Register" asp-controller="Login" class="to_register"> Create Account </a>
-                </p>*@
-
-                <div class="clearfix"></div>
-                <br />
-
-                <div>
-                    <h1><i class="fa fa-paw"></i> File Tracking System!</h1>
-                    <p>©2021 All Rights Reserved. <a href="https://www.b2lsolutions.in">B2l Software Solutions</a></p>
-                </div>
-            </div>
         </form>
+
+        <div class="clearfix"></div>
+
+        <div class="separator">
+            @*<p class="change_link">
+            New to site?
+            <a asp-action="Register" asp-controller="Login" class="to_register"> Create Account </a>
+        </p>*@
+
+            <p>External Logins</p>
+
+            @if (Model.ExternalLogins.Count == 0)
+            {
+                <div>No External Logins Configured</div>
+            }
+            else
+            {
+                <form method="post" asp-action="ExternalLogin" asp-controller="Login" asp-route-returnUrl="@Model.ReturnUrl">
+                    <div>
+                        @foreach (var itm in Model.ExternalLogins)
+                        {
+                            <button type="submit" class="btn btn-primary" name="provider" title="@itm.DisplayName" value="@itm.Name">@itm.DisplayName</button>
+                        }
+                    </div>
+                </form>
+            }
+            <hr />
+            <div class="clearfix"></div>
+            <br />
+
+            <div>
+                <h1><i class="fa fa-paw"></i> File Tracking System!</h1>
+                <p>©2021 All Rights Reserved. <a href="https://www.b2lsolutions.in">B2l Software Solutions</a></p>
+            </div>
+        </div>
     </section>
 </div>
 

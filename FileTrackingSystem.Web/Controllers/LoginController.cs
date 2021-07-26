@@ -1,9 +1,11 @@
 ﻿using FileTrackingSystem.BL.Contract;
 using FileTrackingSystem.BL.Models;
+using FileTrackingSystem.Models.Models;
 using FileTrackingSystem.Web.Auth;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -19,24 +21,40 @@ namespace FileTrackingSystem.Web.Controllers
         private readonly ILogger<LoginController> _logger;
         private readonly IAuthenticateSerivce _authenticate;
         private readonly IIdentityUserService _service;
-        public LoginController(IAuthenticateSerivce authenticate, IIdentityUserService service, ILogger<LoginController> logger)
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        public LoginController(IAuthenticateSerivce authenticate, IIdentityUserService service, ILogger<LoginController> logger,
+            SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
         {
             _authenticate = authenticate;
+            _userManager = userManager;
             _service = service;
             _logger = logger;
+            _signInManager = signInManager;
         }
         [AllowAnonymous]
-        public IActionResult Index()
+        public async Task<IActionResult> Index(string returnUrl)
         {
+            LoginViewModel model = new LoginViewModel()
+            {
+                ReturnUrl = returnUrl,
+                ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList()
+            };
             _authenticate.Inialize(HttpContext);
             ViewBag.err = "";
-            return View();
+            return View(model);
         }
+      
         [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Index(LoginViewModel _user, string returnUrl)
         {
             var usr = await _authenticate.Auth(_user);
+            LoginViewModel model = new LoginViewModel()
+            {
+                ReturnUrl = returnUrl,
+                ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList()
+            };
             if (usr.sign.Succeeded)
             {
                 var claims = new List<Claim>();
@@ -63,12 +81,12 @@ namespace FileTrackingSystem.Web.Controllers
             else if (usr.sign.IsLockedOut)
             {
                 ViewBag.err = "User Locked Out for Multiple Wrong Attempts";
-                return View();
+                return View(model);
             }
             else
             {
                 ViewBag.err = "User Name / Password Error";
-                return View();
+                return View(model);
             }
         }
         public IActionResult Register()
@@ -125,6 +143,64 @@ namespace FileTrackingSystem.Web.Controllers
             HttpContext.SignOutAsync(
         CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("", "Login");
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> ExternalLogin(string provider, string returnUrl)
+        {
+            var redirectUrl = Url.Action("ExternalLoginCallBack", "Login", new { ReturnUrl = returnUrl });
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+            return new ChallengeResult(provider, properties);
+        }
+        [AllowAnonymous]
+        public async Task<IActionResult> ExternalLoginCallBack(string returnUrl, string remoteError = null)
+        {
+            returnUrl = returnUrl ?? Url.Content("~/");
+            LoginViewModel model = new LoginViewModel()
+            {
+                ReturnUrl = returnUrl,
+                ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList()
+            };
+            if (remoteError != null)
+            {
+                ModelState.AddModelError(string.Empty, $"Error From External Provider : {remoteError}");
+                return View("Index", model);
+            }
+            var info = await _signInManager.GetExternalLoginInfoAsync();
+            if (info == null)
+            {
+                ModelState.AddModelError(string.Empty, "Error loading External Login Information");
+                return View("Index", model);
+            }
+
+            var res = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
+            if (res.Succeeded)
+            {
+               
+            }
+            else
+            {
+                var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+                if (email != null)
+                {
+                    var usr = await _userManager.FindByEmailAsync(email);
+                    if (usr == null)
+                    {
+                        usr = new ApplicationUser()
+                        {
+                            UserName = email,
+                            Email = email
+                        };
+                        await _userManager.CreateAsync(usr);
+                    }
+                    await _userManager.AddLoginAsync(usr, info);
+                    await _signInManager.SignInAsync(usr, isPersistent: false);
+                }
+            }
+
+            return View("Index", model);
+
         }
     }
 }

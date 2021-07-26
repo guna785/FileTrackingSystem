@@ -9,6 +9,6 @@ namespace FileTrackingSystem.BL.Contract
 {
     public interface IEdit
     {
-        Task<bool> EditCompany(EditCompanySchema model, string user);
+        Task<bool> EditCompany(AddCompanySchema model, string user);
     }
 }

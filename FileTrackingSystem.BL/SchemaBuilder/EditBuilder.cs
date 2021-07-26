@@ -25,10 +25,10 @@ namespace FileTrackingSystem.BL.SchemaBuilder
         public async Task<T> ReturnObjectData<T>(int id)
         {
             var obj = typeof(T).Name;
-            if (obj.Equals("EditCompanySchema"))
+            if (obj.Equals("AddCompanySchema"))
             {
                 var obdata = _company.AsQueryable().Where(x => x.Id == id).FirstOrDefault();
-                return (T)Convert.ChangeType(new EditCompanySchema()
+                return (T)Convert.ChangeType(new AddCompanySchema()
                 {
                     Id = obdata.Id,
                     Address = obdata.Address,
