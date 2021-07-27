@@ -10,6 +10,7 @@ namespace FileTrackingSystem.BL.Contract
     public interface IGenericDatatableRenderar
     {
         dynamic CompanyJson(DtParameters parameters);
+        dynamic BranchJson(DtParameters parameters);
         dynamic AdminJson(DtParameters parameters);
         dynamic EmployeeJson(DtParameters parameters);
         dynamic RoleJson(DtParameters parameters);

@@ -1,5 +1,8 @@
 ﻿var addCompanyUrl = "/InsertData/AddCompany";
 var editCompanyUrl = "/EditData/EditCompany";
+var addBranchUrl = "/InsertData/AddBranch";
+var editBranchUrl = "/EditData/EditBranch";
+
 
 function JsonPOST(url, data) {
     var token = $("#myToken").val();
@@ -35,7 +38,15 @@ function DoAction(action, data) {
         JsonPOST(editCompanyUrl, data);
         LoadData();
     }
-    
+    if (action === "AddBranch") {
+        JsonPOST(addBranchUrl, data);
+        LoadData();
+    }
+    else if (action === "EditBranch") {
+        JsonPOST(editBranchUrl, data);
+        LoadData();
+    }
+
    
 
 }

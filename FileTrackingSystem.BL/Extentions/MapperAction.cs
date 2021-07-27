@@ -33,6 +33,16 @@ namespace FileTrackingSystem.BL.Extentions
                 Web = schema.Web
             };
         }
+        public static Branch toBranch(this BranchSchema schema)
+        {
+
+            return new Branch()
+            {
+                CompanyId = Convert.ToInt32(schema.CompanyId),
+                createdAt = DateTime.Now,
+                Name = schema.Name
+            };
+        }
         public static ApplicationUser toUser(this UserSchema schema)
         {
             return new ApplicationUser()

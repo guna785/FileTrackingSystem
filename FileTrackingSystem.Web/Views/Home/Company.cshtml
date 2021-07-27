@@ -5,7 +5,7 @@
 <div class="col-md-12 col-sm-12 ">
     <div class="x_panel">
         <div class="x_title">
-            <h2>Branch <small>List</small> <a class="btn btn-primary" style="color:white;" onclick="AddNew();">Add New</a></h2>
+            <h2>Company <small>List</small> <a class="btn btn-primary" style="color:white;" onclick="AddNew();">Add New</a></h2>
             <ul class="nav navbar-right panel_toolbox">
                 <li>
                     <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
@@ -137,7 +137,7 @@
                 {
                     data: null,
                     render: function (data, type, row) {
-                        return '<a href="#" class="btn btn-primary  btn-sm checkbox-toggle" title="Edit" onclick="editBranch(\'' + row.id + '\');"><i class="fa fa-edit"></i></a>  <a class="btn btn-danger  btn-sm checkbox-toggle" onclick="delBranch(\'' + row.id + '\');" title="delete"><i class="fa fa-trash"></i></a>';
+                        return '<a href="#" class="btn btn-primary  btn-sm checkbox-toggle" title="Edit" onclick="editCompany(\'' + row.id + '\');"><i class="fa fa-edit"></i></a>  <a class="btn btn-danger  btn-sm checkbox-toggle" onclick="delCompany(\'' + row.id + '\');" title="delete"><i class="fa fa-trash"></i></a>';
                     }
                 }
             ],
@@ -167,13 +167,13 @@
             $("#AreaModel").modal({ backdrop: 'static', keyboard: false });
         });
     }
-    function editBranch(id) {
+    function editCompany(id) {
         $("#mbody").load("/Home/PopUpModelShow/EditCompany-" + id, function () {
             $("#mtitle").text("Edit Company");
             $("#AreaModel").modal({ backdrop: 'static', keyboard: false });
         });
     }
-    function delBranch(id) {
+    function delCompany(id) {
         swal({
             title: "Are you sure?",
             text: "Your will not be able to recover this Record!",

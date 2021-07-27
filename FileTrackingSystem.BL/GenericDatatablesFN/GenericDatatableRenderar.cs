@@ -1,5 +1,6 @@
 ﻿using FileTrackingSystem.BL.Contract;
 using FileTrackingSystem.BL.DataTableModel;
+using FileTrackingSystem.BL.DataTableViewModel;
 using FileTrackingSystem.BL.Extentions;
 using FileTrackingSystem.DAL.Contract;
 using FileTrackingSystem.Models.Enums;
@@ -21,13 +22,14 @@ namespace FileTrackingSystem.BL.GenericDatatablesFN
         private readonly IGenericDbService<JobType> _jbType;
         private readonly IGenericDbService<Job> _job;
         private readonly IGenericDbService<Company> _company;
+        private readonly IGenericDbService<Branch> _branch;
         private readonly IGenericDbService<Client> _client;
         private readonly UserManager<ApplicationUser> _user;
         private readonly RoleManager<ApplicationRole> _role;
         public GenericDatatableRenderar(IGenericDbService<Company> company, UserManager<ApplicationUser> user, RoleManager<ApplicationRole> role,
             IGenericDbService<Client> client, IGenericDbService<Job> job, IGenericDbService<JobType> jbType, IGenericDbService<Invoice> invoice,
-            IGenericDbService<Payment> payment, IGenericDbService<Document> document)
-        {            
+            IGenericDbService<Payment> payment, IGenericDbService<Document> document, IGenericDbService<Branch> branch)
+        {
             _user = user;
             _company = company;
             _role = role;
@@ -37,6 +39,7 @@ namespace FileTrackingSystem.BL.GenericDatatablesFN
             _job = job;
             _payment = payment;
             _document = document;
+            _branch = branch;
         }
 
         public dynamic CompanyJson(DtParameters parameters)
@@ -60,8 +63,8 @@ namespace FileTrackingSystem.BL.GenericDatatablesFN
             var result = _company.AsQueryable();
             if (!string.IsNullOrEmpty(searchBy))
             {
-                result = result.Where(r => r.Name != null && r.Name.ToUpper().Contains(searchBy.ToUpper()) || 
-                                           r.Address!=null && r.Address.ToUpper().Contains(searchBy.ToUpper()) 
+                result = result.Where(r => r.Name != null && r.Name.ToUpper().Contains(searchBy.ToUpper()) ||
+                                           r.Address != null && r.Address.ToUpper().Contains(searchBy.ToUpper())
                                           );
             }
 
@@ -102,14 +105,19 @@ namespace FileTrackingSystem.BL.GenericDatatablesFN
                 orderCriteria = "createdAt";
                 orderAscendingDirection = false;
             }
-            var result = _user.Users.Where(x=>x.userType==UserType.Admin);
+             
+            var branch = _branch.AsQueryable();
+            var company = _company.AsQueryable();
+            var result = _user.Users.Where(x => x.userType == UserType.Admin);
             if (!string.IsNullOrEmpty(searchBy))
             {
                 result = result.Where(r => r.Name != null && r.Name.ToUpper().Contains(searchBy.ToUpper()) ||
                                            r.PhoneNumber != null && r.PhoneNumber.ToUpper().Contains(searchBy.ToUpper()) ||
-                                           r.Email!=null && r.Email.ToUpper().Contains(searchBy.ToUpper()) ||
-                                           r.UserName!=null && r.UserName.ToUpper().Contains(searchBy.ToUpper())
+                                           r.Email != null && r.Email.ToUpper().Contains(searchBy.ToUpper()) ||
+                                           r.UserName != null && r.UserName.ToUpper().Contains(searchBy.ToUpper())
                                           );
+                branch = branch.Where(r => r.Name != null && r.Name.ToUpper().Contains(searchBy.ToUpper()));
+                company = company.Where(r => r.Name != null && r.Name.ToUpper().Contains(searchBy.ToUpper()));
             }
 
             result = orderAscendingDirection ? result.AsQueryable().OrderByDynamic(orderCriteria, DtOrderDir.Asc) : result.AsQueryable().OrderByDynamic(orderCriteria, DtOrderDir.Desc);
@@ -128,6 +136,25 @@ namespace FileTrackingSystem.BL.GenericDatatablesFN
                 data = result
                     .Skip(parameters.Start)
                     .Take(parameters.Length)
+                    .AsEnumerable().Select(x => new AdminView()
+                    {
+                        gender = x.gender,
+                        Email = x.Email,
+                        address = x.address,
+                        createdAt = x.createdAt,
+                        branchId = branch.Where(y => y.Id == x.branchId).FirstOrDefault().Name,
+                        CompanyId = company.Where(y => y.Id == x.CompanyId).FirstOrDefault().Name,
+                        idNumber = x.idNumber,
+                        Name = x.Name,
+                        idType = x.idType,
+                        img = x.img,
+                        PhoneNumber = x.PhoneNumber,
+                        status = x.status,
+                        UserName = x.UserName,
+                        userType = x.userType,
+                        Id = x.Id
+
+                    })
                     .ToList()
             };
         }
@@ -202,7 +229,7 @@ namespace FileTrackingSystem.BL.GenericDatatablesFN
             if (!string.IsNullOrEmpty(searchBy))
             {
                 result = result.Where(r => r.Name != null && r.Name.ToUpper().Contains(searchBy.ToUpper()) ||
-                                           r.description != null && r.description.ToUpper().Contains(searchBy.ToUpper()) 
+                                           r.description != null && r.description.ToUpper().Contains(searchBy.ToUpper())
                                           );
             }
 
@@ -251,10 +278,10 @@ namespace FileTrackingSystem.BL.GenericDatatablesFN
                                            r.Phone != null && r.Phone.ToUpper().Contains(searchBy.ToUpper()) ||
                                            r.Email != null && r.Email.ToUpper().Contains(searchBy.ToUpper()) ||
                                            r.Pan != null && r.Pan.ToUpper().Contains(searchBy.ToUpper()) ||
-                                           r.Address!=null && r.Pan.ToUpper().Contains(searchBy.ToUpper()) ||
+                                           r.Address != null && r.Pan.ToUpper().Contains(searchBy.ToUpper()) ||
                                            r.clientType.ToString().ToUpper().Contains(searchBy.ToUpper()) ||
-                                           r.Gender.ToString().ToUpper().Contains(searchBy.ToUpper())||
-                                           r.ContactPersonName!=null && r.ContactPersonName.ToUpper().Contains(searchBy.ToUpper())
+                                           r.Gender.ToString().ToUpper().Contains(searchBy.ToUpper()) ||
+                                           r.ContactPersonName != null && r.ContactPersonName.ToUpper().Contains(searchBy.ToUpper())
                                         );
             }
 
@@ -299,8 +326,8 @@ namespace FileTrackingSystem.BL.GenericDatatablesFN
             var result = _job.AsQueryable();
             if (!string.IsNullOrEmpty(searchBy))
             {
-                result = result.Where(r => r.JbId!=null && r.JbId.ToUpper().Contains(searchBy.ToUpper()) 
-                                           
+                result = result.Where(r => r.JbId != null && r.JbId.ToUpper().Contains(searchBy.ToUpper())
+
                                         );
             }
 
@@ -504,6 +531,62 @@ namespace FileTrackingSystem.BL.GenericDatatablesFN
                 data = result
                     .Skip(parameters.Start)
                     .Take(parameters.Length)
+                    .ToList()
+            };
+        }
+
+        public dynamic BranchJson(DtParameters parameters)
+        {
+            var searchBy = parameters.Search?.Value;
+            var orderCriteria = string.Empty;
+            var orderAscendingDirection = true;
+
+            if (parameters.Order != null)
+            {
+                // in this example we just default sort on the 1st column
+                orderCriteria = "createdAt";
+                orderAscendingDirection = parameters.Order[0].Dir.ToString().ToLower() != "asc";
+            }
+            else
+            {
+                // if we have an empty search then just order the results by Id ascending
+                orderCriteria = "createdAt";
+                orderAscendingDirection = false;
+            }
+            //var result = _branch.AsQueryable();
+            var result = (from b in _branch.AsQueryable()
+                          join c in _company.AsQueryable() on b.CompanyId equals c.Id
+                          select new BranchView() { Id = b.Id, companyId = c.Name, Name = b.Name, createdAt = b.createdAt });
+            if (!string.IsNullOrEmpty(searchBy))
+            {
+                result = result.Where(r => r.Name != null && r.Name.ToUpper().Contains(searchBy.ToUpper())
+
+                                        );
+            }
+
+            result = orderAscendingDirection ? result.AsQueryable().OrderByDynamic(orderCriteria, DtOrderDir.Asc) : result.AsQueryable().OrderByDynamic(orderCriteria, DtOrderDir.Desc);
+
+            // now just get the count of items (without the skip and take) - eg how many could be returned with filtering
+            var filteredResultsCount = result.Count();
+            var cntdb = _branch.AsQueryable();
+
+            var totalResultsCount = cntdb.Count();
+
+            return new
+            {
+                draw = parameters.Draw,
+                recordsTotal = totalResultsCount,
+                recordsFiltered = filteredResultsCount,
+                data = result
+                    .Skip(parameters.Start)
+                    .Take(parameters.Length)
+                    //.AsEnumerable().Select(x => new BranchView()
+                    //{
+                    //    Name = x.Name,
+                    //    companyId = _company.FindById(x.CompanyId).Name,
+                    //    createdAt = x.createdAt,
+                    //    Id = x.Id
+                    //})
                     .ToList()
             };
         }

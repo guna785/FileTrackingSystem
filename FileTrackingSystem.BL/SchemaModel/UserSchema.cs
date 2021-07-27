@@ -18,8 +18,10 @@ namespace FileTrackingSystem.BL.SchemaModel
         public Gender gender { get; set; }
         [GSchema("userType", "User Type", "string", true, getEnumVal = "usertype-admin", getHtmlClass = "col-md-6")]
         public UserType userType { get; set; }
-        [GSchema("CompanyId", "Company", "string", true, getEnumVal = "Company", getHtmlClass = "col-md-6")]
+        [GSchema("CompanyId", "Select Company", "string", true, getEnumVal = "Company", getHtmlClass = "col-md-6")]
         public string CompanyId { get; set; }
+        [GSchema("branchId", "Select Branch", "string", true, getEnumVal = "branch", getHtmlClass = "col-md-6")]
+        public string branchId { get; set; }
         [GSchema("userName", "User Name", "string", true, getHtmlClass = "col-md-6")]
         public string userName { get; set; }
         [GSchema("password", "Password", "password", true, getHtmlClass = "col-md-6")]

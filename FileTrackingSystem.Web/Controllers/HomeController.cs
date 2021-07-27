@@ -64,6 +64,32 @@ namespace FileTrackingSystem.Web.Controllers
                 schema = await _sgenerator.GenerateSchema<CompanySchema>("");
                 ViewBag.modalTitle = "EditCompany";
             }
+           else if (ID.Contains("AddBranch"))
+            {
+                schema = await _sgenerator.GenerateSchema<BranchSchema>("");
+                ViewBag.modalTitle = "AddBranch";
+            }
+            else if (ID.Contains("EditBranch"))
+            {
+                var objId = ID.Split('-')[1];
+                var data = await _builder.ReturnObjectData<BranchSchema>(objId == null ? 0 : Convert.ToInt32(objId));
+                ViewBag.val = Newtonsoft.Json.JsonConvert.SerializeObject(data);
+                schema = await _sgenerator.GenerateSchema<BranchSchema>("");
+                ViewBag.modalTitle = "EditBranch";
+            }
+            else if (ID.Contains("AddAdmin"))
+            {
+                schema = await _sgenerator.GenerateSchema<UserSchema>("");
+                ViewBag.modalTitle = "AddAdmin";
+            }
+            else if (ID.Contains("EditAdmin"))
+            {
+                var objId = ID.Split('-')[1];
+                var data = await _builder.ReturnObjectData<UserSchema>(objId == null ? 0 : Convert.ToInt32(objId));
+                ViewBag.val = Newtonsoft.Json.JsonConvert.SerializeObject(data);
+                schema = await _sgenerator.GenerateSchema<UserSchema>("");
+                ViewBag.modalTitle = "EditAdmin";
+            }
             ViewBag.schema = schema;
             return View();
         }

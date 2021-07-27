@@ -36,6 +36,23 @@ namespace FileTrackingSystem.Web.Controllers
             }
             return BadRequest("Invalid Request");
         }
+        [HttpPost]
+        public async Task<IActionResult> AddBranch([FromBody] BranchSchema schema)
+        {
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("Model state is Invalid");
+                return BadRequest("Invalid Request");
+            }
+            var res = await _insert.InsertBranch(schema, HttpContext.User.Identity.Name);
+            if (res)
+            {
+                _logger.LogInformation("Resquest Completed Successfully");
+                var result = new { status = $"New Branch {schema.Name} is Sucessfully Added" };
+                return Ok(result);
+            }
+            return BadRequest("Invalid Request");
+        }
 
     }
 }

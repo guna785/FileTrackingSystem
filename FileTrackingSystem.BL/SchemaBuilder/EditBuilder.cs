@@ -14,11 +14,12 @@ namespace FileTrackingSystem.BL.SchemaBuilder
     {
 
         private readonly IGenericDbService<Company> _company;
+        private readonly IGenericDbService<Branch> _branch;
         private readonly UserManager<ApplicationUser> _user;
         public EditBuilder(IGenericDbService<Company> company,
-            UserManager<ApplicationUser> user)
+            UserManager<ApplicationUser> user, IGenericDbService<Branch> branch)
         {
-
+            _branch = branch;
             _company = company;
             _user = user;
         }
@@ -44,6 +45,16 @@ namespace FileTrackingSystem.BL.SchemaBuilder
                     BankBranch = obdata.BankBranch,
                     BankName = obdata.BankName,
                     Contact = obdata.Contact
+                }, typeof(T));
+            }
+            else if (obj.Equals("BranchSchema"))
+            {
+                var obdata = _branch.AsQueryable().Where(x => x.Id == id).FirstOrDefault();
+                return (T)Convert.ChangeType(new BranchSchema()
+                {
+                    Id = obdata.Id,
+                    CompanyId = _company.FindById(obdata.CompanyId).Name,
+                    Name = obdata.Name,
                 }, typeof(T));
             }
 

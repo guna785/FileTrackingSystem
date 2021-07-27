@@ -21,6 +21,11 @@ namespace FileTrackingSystem.Web.Controllers
             return Ok(_renderar.CompanyJson(parameters));
         }
         [HttpPost]
+        public IActionResult LoadBranch([FromBody] DtParameters parameters)
+        {
+            return Ok(_renderar.BranchJson(parameters));
+        }
+        [HttpPost]
         public IActionResult LoadAdmins([FromBody] DtParameters parameters)
         {
             return Ok(_renderar.AdminJson(parameters));

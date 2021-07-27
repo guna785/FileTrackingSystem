@@ -32,15 +32,11 @@ namespace FileTrackingSystem.Schema.Generator
             else if (val.Equals("usertype"))
             {
                 return Newtonsoft.Json.JsonConvert.SerializeObject(Enum.GetNames(typeof(UserType)).Where(x => !x.Equals("User")).ToList());
-            }
-            
-            
-            else if (val.Equals("hospital"))
+            }                     
+            else if (val.Equals("company"))
             {
-
                 return Newtonsoft.Json.JsonConvert.SerializeObject(_company.AsQueryable().Select(x => x.Name).ToList());
             }
-
             else if (val.Contains("month"))
             {
                 var ls = new List<string>(CultureInfo.CurrentCulture.DateTimeFormat.AbbreviatedMonthNames);
