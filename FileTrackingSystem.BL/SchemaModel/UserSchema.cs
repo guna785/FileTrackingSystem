@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FileTrackingSystem.BL.SchemaModel
 {
-    public class AddEmployeeSchema
+    public class UserSchema
     {
         [GSchema("Id", "ID", "hidden", false)]
         public int Id { get; set; }
@@ -16,7 +16,7 @@ namespace FileTrackingSystem.BL.SchemaModel
         public string Name { get; set; }
         [GSchema("gender", "Gender", "string", true, getEnumVal = "gender", getHtmlClass = "col-md-6")]
         public Gender gender { get; set; }
-        [GSchema("userType", "User Type", "string", true, getEnumVal = "usertype-User", getHtmlClass = "col-md-6")]
+        [GSchema("userType", "User Type", "string", true, getEnumVal = "usertype-admin", getHtmlClass = "col-md-6")]
         public UserType userType { get; set; }
         [GSchema("CompanyId", "Company", "string", true, getEnumVal = "Company", getHtmlClass = "col-md-6")]
         public string CompanyId { get; set; }
@@ -28,5 +28,6 @@ namespace FileTrackingSystem.BL.SchemaModel
         public string email { get; set; }
         [GSchema("phone", "Phone", "number", true, getHtmlClass = "col-md-6")]
         public string phone { get; set; }
+       
     }
 }

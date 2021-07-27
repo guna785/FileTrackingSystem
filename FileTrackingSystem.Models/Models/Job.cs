@@ -10,9 +10,11 @@ namespace FileTrackingSystem.Models.Models
 {
     public class Job:CommonModel
     {
+        public string JbId { get; set; }
         public int jobTypeId { get; set; }
         public ClientType clientType { get; set; }
         public int clientId { get; set; }
+        public int companyId { get; set; }
         public int ApplicationUserId { get; set; }
         public DateTime AllotedTime { get; set; }
         public JobStatus status { get; set; }

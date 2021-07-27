@@ -1,6 +1,7 @@
 ﻿using FileTrackingSystem.BL.Contract;
 using FileTrackingSystem.BL.GenericDatatablesFN;
 using FileTrackingSystem.BL.Helper;
+using FileTrackingSystem.BL.RestControl;
 using FileTrackingSystem.BL.SchemaBuilder;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -16,8 +17,8 @@ namespace FileTrackingSystem.BL
         public static IServiceCollection AddBLExtensions(this IServiceCollection services)
         {
             services.AddScoped(typeof(IGenericDatatableRenderar), typeof(GenericDatatableRenderar));
-            //services.AddScoped(typeof(IInsert), typeof(InsertControl));
-            //services.AddScoped(typeof(IEdit), typeof(EditControl));
+            services.AddScoped(typeof(IInsert), typeof(InsertControl));
+            services.AddScoped(typeof(IEdit), typeof(EditControl));
             services.AddScoped(typeof(IIdentityUserService), typeof(IdentityUserService));
             services.AddScoped<EditBuilder>();
             return services;

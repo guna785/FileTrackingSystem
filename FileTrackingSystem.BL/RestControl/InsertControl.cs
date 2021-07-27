@@ -2,6 +2,7 @@
 using FileTrackingSystem.BL.Extentions;
 using FileTrackingSystem.BL.SchemaModel;
 using FileTrackingSystem.DAL.Contract;
+using FileTrackingSystem.Models.Enums;
 using FileTrackingSystem.Models.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
@@ -16,32 +17,37 @@ namespace FileTrackingSystem.BL.RestControl
     public class InsertControl : IInsert
     {
         private readonly IGenericDbService<Company> _company;
+        private readonly IGenericDbService<Log> _log;
         private readonly UserManager<ApplicationUser> _user;
         private readonly ILogger<InsertControl> _logger;
-        public InsertControl(IGenericDbService<Company> company, UserManager<ApplicationUser> user, ILogger<InsertControl> logger)
+        public InsertControl(IGenericDbService<Company> company, UserManager<ApplicationUser> user, ILogger<InsertControl> logger,
+            IGenericDbService<Log> log)
         {
             _user = user;
             _company = company;
             _logger = logger;
+            _log = log;
         }
-        public async Task<bool> InsertCompany(AddCompanySchema model, string user)
+        public async Task<bool> InsertCompany(CompanySchema model, string user)
         {
             try
             {
                 _logger.LogInformation("Compay Data Addition Starts ....");
                 _logger.LogInformation(Newtonsoft.Json.JsonConvert.SerializeObject(model));
+                var usr =await _user.FindByNameAsync(user);
                 _company.Create(model.toCompany());
+                _log.Create(MapperAction.CreateLog("Insert Company", $"Comapany {model.Name} is Added successfully by {usr.UserName}", usr.UserName, LogType.Event));
                 _logger.LogInformation("Compay Data Addition Done ....");
                 return true;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
+                _logger.LogError(ex.ToString());               
                 return false;
             }
         }
 
-        public async Task<bool> InsertEmployee(AddEmployeeSchema model, string user)
+        public async Task<bool> InsertEmployee(EmployeeSchema model, string user)
         {
             try
             {
@@ -63,7 +69,7 @@ namespace FileTrackingSystem.BL.RestControl
             }
         }
 
-        public async Task<bool> InsertUser(AddUserSchema model, string user)
+        public async Task<bool> InsertUser(UserSchema model, string user)
         {
             try
             {

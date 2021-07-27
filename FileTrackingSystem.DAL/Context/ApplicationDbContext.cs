@@ -29,6 +29,8 @@ namespace FileTrackingSystem.DAL.Context
             modelBuilder.Entity<Job>().ToTable("Job");
             modelBuilder.Entity<JobType>().ToTable("JobType");
             modelBuilder.Entity<Notifications>().ToTable("Notifications");
+            modelBuilder.Entity<Branch>().ToTable("Branch");
+            modelBuilder.Entity<Log>().ToTable("Log");
 
         }
     }

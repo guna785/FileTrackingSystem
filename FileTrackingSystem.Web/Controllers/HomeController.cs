@@ -39,6 +39,11 @@ namespace FileTrackingSystem.Web.Controllers
         {
             return View();
         }
+        [Authorize(Roles = "SuperAdmin")]
+        public IActionResult Branch()
+        {
+            return View();
+        }
         public IActionResult Employee()
         {
             return View();
@@ -48,15 +53,15 @@ namespace FileTrackingSystem.Web.Controllers
         {
             if (ID.Contains("AddCompany"))
             {
-                schema = await _sgenerator.GenerateSchema<AddCompanySchema>("");
+                schema = await _sgenerator.GenerateSchema<CompanySchema>("");
                 ViewBag.modalTitle = "AddCompany";
             }
             else if (ID.Contains("EditCompany"))
             {
                 var objId = ID.Split('-')[1];
-                var data = await _builder.ReturnObjectData<AddCompanySchema>(objId == null ? 0 : Convert.ToInt32(objId));
+                var data = await _builder.ReturnObjectData<CompanySchema>(objId == null ? 0 : Convert.ToInt32(objId));
                 ViewBag.val = Newtonsoft.Json.JsonConvert.SerializeObject(data);
-                schema = await _sgenerator.GenerateSchema<AddCompanySchema>("");
+                schema = await _sgenerator.GenerateSchema<CompanySchema>("");
                 ViewBag.modalTitle = "EditCompany";
             }
             ViewBag.schema = schema;

@@ -10,6 +10,7 @@ namespace FileTrackingSystem.Models.Models
 {
     public class Payment:CommonModel
     {
+        public string payId { get; set; }
         public int invoiceId { get; set; }
         public int Amount { get; set; }
         public int ApplicationUserId { get; set; }

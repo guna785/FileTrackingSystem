@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FileTrackingSystem.DAL.Migrations.ApplicationDb
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210714045249_MyDB")]
-    partial class MyDB
+    [Migration("20210727043135_MyDb")]
+    partial class MyDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -18,6 +18,28 @@ namespace FileTrackingSystem.DAL.Migrations.ApplicationDb
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
                 .HasAnnotation("ProductVersion", "5.0.7");
+
+            modelBuilder.Entity("FileTrackingSystem.Models.Models.Branch", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("createdAt")
+                        .HasColumnType("datetime");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("Branch");
+                });
 
             modelBuilder.Entity("FileTrackingSystem.Models.Models.Client", b =>
                 {
@@ -126,6 +148,9 @@ namespace FileTrackingSystem.DAL.Migrations.ApplicationDb
                     b.Property<DateTime>("createdAt")
                         .HasColumnType("datetime");
 
+                    b.Property<int>("status")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.ToTable("Company");
@@ -212,6 +237,9 @@ namespace FileTrackingSystem.DAL.Migrations.ApplicationDb
                     b.Property<DateTime>("createdAt")
                         .HasColumnType("datetime");
 
+                    b.Property<string>("invId")
+                        .HasColumnType("text");
+
                     b.Property<int>("jobId")
                         .HasColumnType("int");
 
@@ -244,6 +272,9 @@ namespace FileTrackingSystem.DAL.Migrations.ApplicationDb
 
                     b.Property<DateTime>("CompletedTime")
                         .HasColumnType("datetime");
+
+                    b.Property<string>("JbId")
+                        .HasColumnType("text");
 
                     b.Property<int>("clientId")
                         .HasColumnType("int");
@@ -296,6 +327,32 @@ namespace FileTrackingSystem.DAL.Migrations.ApplicationDb
                     b.HasKey("Id");
 
                     b.ToTable("JobType");
+                });
+
+            modelBuilder.Entity("FileTrackingSystem.Models.Models.Log", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("createdAt")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("eventName")
+                        .HasColumnType("text");
+
+                    b.Property<int>("logType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("message")
+                        .HasColumnType("text");
+
+                    b.Property<string>("userName")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Log");
                 });
 
             modelBuilder.Entity("FileTrackingSystem.Models.Models.Notifications", b =>
@@ -353,6 +410,9 @@ namespace FileTrackingSystem.DAL.Migrations.ApplicationDb
 
                     b.Property<int>("invoiceId")
                         .HasColumnType("int");
+
+                    b.Property<string>("payId")
+                        .HasColumnType("text");
 
                     b.Property<int>("status")
                         .HasColumnType("int");
@@ -438,6 +498,15 @@ namespace FileTrackingSystem.DAL.Migrations.ApplicationDb
                     b.HasIndex("jobId");
 
                     b.ToTable("SubmittedDocument");
+                });
+
+            modelBuilder.Entity("FileTrackingSystem.Models.Models.Branch", b =>
+                {
+                    b.HasOne("FileTrackingSystem.Models.Models.Company", null)
+                        .WithMany("Branches")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("FileTrackingSystem.Models.Models.DocumentRequired", b =>
@@ -535,6 +604,8 @@ namespace FileTrackingSystem.DAL.Migrations.ApplicationDb
 
             modelBuilder.Entity("FileTrackingSystem.Models.Models.Company", b =>
                 {
+                    b.Navigation("Branches");
+
                     b.Navigation("Invoices");
 
                     b.Navigation("Payments");

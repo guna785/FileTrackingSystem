@@ -11,7 +11,7 @@ namespace FileTrackingSystem.BL.Extentions
 {
     public static class MapperAction
     {
-        public static Company toCompany(this AddCompanySchema schema)
+        public static Company toCompany(this CompanySchema schema)
         {
             return new Company()
             {
@@ -33,7 +33,7 @@ namespace FileTrackingSystem.BL.Extentions
                 Web = schema.Web
             };
         }
-        public static ApplicationUser toUser(this AddUserSchema schema)
+        public static ApplicationUser toUser(this UserSchema schema)
         {
             return new ApplicationUser()
             {
@@ -50,7 +50,7 @@ namespace FileTrackingSystem.BL.Extentions
 
             };
         }
-        public static ApplicationUser toEmployee(this AddEmployeeSchema schema)
+        public static ApplicationUser toEmployee(this EmployeeSchema schema)
         {
             return new ApplicationUser()
             {
@@ -65,6 +65,17 @@ namespace FileTrackingSystem.BL.Extentions
                 userType = schema.userType,
                 UserName = schema.userName
 
+            };
+        }
+        public static Log CreateLog(string name, string message, string user, LogType log)
+        {
+            return new Log()
+            {
+                createdAt = DateTime.Now,
+                eventName = name,
+                message = message,
+                userName = user,
+                logType = log
             };
         }
 

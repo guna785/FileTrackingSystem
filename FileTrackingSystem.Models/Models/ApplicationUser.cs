@@ -21,7 +21,7 @@ namespace FileTrackingSystem.Models.Models
         public UserType userType { get; set; }
         public DateTime createdAt { get; set; }
         public int CompanyId { get; set; }
-        public virtual IList<ApplicationRole> roles { get; set; }
+        public int branchId { get; set; }
 
     }
 }

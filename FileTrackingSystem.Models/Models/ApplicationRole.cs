@@ -10,7 +10,7 @@ namespace FileTrackingSystem.Models.Models
 {
     public class ApplicationRole : IdentityRole<int>, ICommonModel
     {
-        public int ApplicationUserId { get; set; }
+        
         public string description { get; set; }
         public DateTime createdAt { get; set; }
     }

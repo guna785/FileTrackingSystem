@@ -23,9 +23,6 @@ namespace FileTrackingSystem.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("ApplicationUserId")
-                        .HasColumnType("int");
-
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("text");
@@ -45,8 +42,6 @@ namespace FileTrackingSystem.DAL.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
@@ -116,6 +111,9 @@ namespace FileTrackingSystem.DAL.Migrations
 
                     b.Property<string>("address")
                         .HasColumnType("text");
+
+                    b.Property<int>("branchId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("createdAt")
                         .HasColumnType("datetime");
@@ -253,15 +251,6 @@ namespace FileTrackingSystem.DAL.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("FileTrackingSystem.Models.Models.ApplicationRole", b =>
-                {
-                    b.HasOne("FileTrackingSystem.Models.Models.ApplicationUser", null)
-                        .WithMany("roles")
-                        .HasForeignKey("ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.HasOne("FileTrackingSystem.Models.Models.ApplicationRole", null)
@@ -311,11 +300,6 @@ namespace FileTrackingSystem.DAL.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("FileTrackingSystem.Models.Models.ApplicationUser", b =>
-                {
-                    b.Navigation("roles");
                 });
 #pragma warning restore 612, 618
         }

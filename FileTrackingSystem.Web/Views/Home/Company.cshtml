@@ -118,7 +118,7 @@
                 { data: "name" },
                 { data: "address" },
                 { data:"email" },
-                { data: "phone" },
+                { data: "contact" },
                 { data: "status" },
                 {
                     data: "createdAt",
@@ -163,13 +163,13 @@
     });
     function AddNew() {
         $("#mbody").load("/Home/PopUpModelShow/AddCompany", function () {
-            $("#mtitle").text("Add Branch");
+            $("#mtitle").text("Add Company");
             $("#AreaModel").modal({ backdrop: 'static', keyboard: false });
         });
     }
     function editBranch(id) {
         $("#mbody").load("/Home/PopUpModelShow/EditCompany-" + id, function () {
-            $("#mtitle").text("Edit Branch");
+            $("#mtitle").text("Edit Company");
             $("#AreaModel").modal({ backdrop: 'static', keyboard: false });
         });
     }

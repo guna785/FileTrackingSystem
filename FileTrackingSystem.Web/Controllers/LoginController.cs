@@ -40,7 +40,7 @@ namespace FileTrackingSystem.Web.Controllers
                 ReturnUrl = returnUrl,
                 ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList()
             };
-            _authenticate.Inialize(HttpContext);
+            await _authenticate.Inialize(HttpContext);
             ViewBag.err = "";
             return View(model);
         }

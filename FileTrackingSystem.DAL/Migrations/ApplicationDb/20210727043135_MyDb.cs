@@ -4,7 +4,7 @@ using MySql.EntityFrameworkCore.Metadata;
 
 namespace FileTrackingSystem.DAL.Migrations.ApplicationDb
 {
-    public partial class MyDB : Migration
+    public partial class MyDb : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -55,6 +55,7 @@ namespace FileTrackingSystem.DAL.Migrations.ApplicationDb
                     BankAccNo = table.Column<string>(type: "text", nullable: true),
                     BankBranch = table.Column<string>(type: "text", nullable: true),
                     IFSC = table.Column<string>(type: "text", nullable: true),
+                    status = table.Column<int>(type: "int", nullable: false),
                     createdAt = table.Column<DateTime>(type: "datetime", nullable: false)
                 },
                 constraints: table =>
@@ -97,6 +98,23 @@ namespace FileTrackingSystem.DAL.Migrations.ApplicationDb
                 });
 
             migrationBuilder.CreateTable(
+                name: "Log",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    logType = table.Column<int>(type: "int", nullable: false),
+                    eventName = table.Column<string>(type: "text", nullable: true),
+                    userName = table.Column<string>(type: "text", nullable: true),
+                    message = table.Column<string>(type: "text", nullable: true),
+                    createdAt = table.Column<DateTime>(type: "datetime", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Log", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Notifications",
                 columns: table => new
                 {
@@ -130,6 +148,27 @@ namespace FileTrackingSystem.DAL.Migrations.ApplicationDb
                 });
 
             migrationBuilder.CreateTable(
+                name: "Branch",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "text", nullable: true),
+                    CompanyId = table.Column<int>(type: "int", nullable: false),
+                    createdAt = table.Column<DateTime>(type: "datetime", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Branch", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Branch_Company_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Company",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "DocumentRequired",
                 columns: table => new
                 {
@@ -156,6 +195,7 @@ namespace FileTrackingSystem.DAL.Migrations.ApplicationDb
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    JbId = table.Column<string>(type: "text", nullable: true),
                     jobTypeId = table.Column<int>(type: "int", nullable: false),
                     clientType = table.Column<int>(type: "int", nullable: false),
                     clientId = table.Column<int>(type: "int", nullable: false),
@@ -189,6 +229,7 @@ namespace FileTrackingSystem.DAL.Migrations.ApplicationDb
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    invId = table.Column<string>(type: "text", nullable: true),
                     jobId = table.Column<int>(type: "int", nullable: false),
                     MyProperty = table.Column<int>(type: "int", nullable: false),
                     clientId = table.Column<int>(type: "int", nullable: false),
@@ -274,6 +315,7 @@ namespace FileTrackingSystem.DAL.Migrations.ApplicationDb
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    payId = table.Column<string>(type: "text", nullable: true),
                     invoiceId = table.Column<int>(type: "int", nullable: false),
                     Amount = table.Column<int>(type: "int", nullable: false),
                     ApplicationUserId = table.Column<int>(type: "int", nullable: false),
@@ -311,6 +353,11 @@ namespace FileTrackingSystem.DAL.Migrations.ApplicationDb
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Branch_CompanyId",
+                table: "Branch",
+                column: "CompanyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DocumentRequired_jobTypeId",
@@ -377,10 +424,16 @@ namespace FileTrackingSystem.DAL.Migrations.ApplicationDb
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Branch");
+
+            migrationBuilder.DropTable(
                 name: "Document");
 
             migrationBuilder.DropTable(
                 name: "DocumentRequired");
+
+            migrationBuilder.DropTable(
+                name: "Log");
 
             migrationBuilder.DropTable(
                 name: "Notifications");

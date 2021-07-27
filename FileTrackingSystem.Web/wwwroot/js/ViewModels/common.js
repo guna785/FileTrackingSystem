@@ -1,8 +1,5 @@
-﻿var addHospitalUrl = "/InsertData/InsertHospital";
-var addRequestUrl = "/InsertData/InsertBranch";
-var addAdminUrl = "/InsertData/InsertAdmin";
-var editHospitalUrl = "/EditData/EditHospital";
-var editBranchUrl = "/EditData/EditBranch";
+﻿var addCompanyUrl = "/InsertData/AddCompany";
+var editCompanyUrl = "/EditData/EditCompany";
 
 function JsonPOST(url, data) {
     var token = $("#myToken").val();
@@ -30,26 +27,15 @@ function JsonPOST(url, data) {
 
 function DoAction(action, data) {
 
-    if (action === "AddHospital") {
-        JsonPOST(addHospitalUrl, data);
+    if (action === "AddCompany") {
+        JsonPOST(addCompanyUrl, data);
         LoadData();
     }
-    else if (action === "EditHospital") {
-        JsonPOST(editHospitalUrl, data);
+    else if (action === "EditCompany") {
+        JsonPOST(editCompanyUrl, data);
         LoadData();
     }
-    else if (action === "AddBranch") {
-        JsonPOST(addRequestUrl, data);
-        LoadData();
-    }
-    else if (action === "EditBranch") {
-        JsonPOST(editBranchUrl, data);
-        LoadData();
-    }
-    else if (action === "AddAdmin") {
-        JsonPOST(addAdminUrl, data);
-        LoadData();
-    }
+    
    
 
 }

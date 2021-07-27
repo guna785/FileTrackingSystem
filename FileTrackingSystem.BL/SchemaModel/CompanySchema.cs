@@ -9,10 +9,10 @@ using Newtonsoft.Json.Schema;
 
 namespace FileTrackingSystem.BL.SchemaModel
 {
-    public class AddCompanySchema
+    public class CompanySchema
     {
         [GSchema("Id", "ID", "hidden", false)]
-        public int Id { get; set; }
+        public int Id { get; set; } = 0;
         [GSchema("Name", "Name", "string", true, getHtmlClass = "col-md-6")]
         public string Name { get; set; }
         [GSchema("Address", "Address", "string", true, getHtmlClass = "col-md-6")]

@@ -27,7 +27,9 @@ namespace FileTrackingSystem.Models.Models
         public string BankBranch { get; set; }
         public string IFSC { get; set; }
         public StatusType status { get; set; }
+        public virtual IList<Job> Jobs { get; set; }
         public virtual IList<Invoice> Invoices { get; set; }
         public virtual IList<Payment> Payments { get; set; }
+        public virtual IList<Branch> Branches { get; set; }
     }
 }
