@@ -43,7 +43,7 @@ namespace FileTrackingSystem.BL.Extentions
                 Name = schema.Name
             };
         }
-        public static ApplicationUser toUser(this UserSchema schema)
+        public static ApplicationUser toUser(this UserSchema schema, int Id)
         {
             return new ApplicationUser()
             {
@@ -54,13 +54,24 @@ namespace FileTrackingSystem.BL.Extentions
                 PhoneNumber = schema.phone,
                 status = StatusType.Active,
                 gender = schema.gender,
-                CompanyId = Convert.ToInt32(schema.CompanyId),
+                CompanyId = Id,
+                branchId = Convert.ToInt32(schema.branchId),
                 userType = schema.userType,
                 UserName = schema.userName
 
             };
         }
-        public static ApplicationUser toEmployee(this EmployeeSchema schema)
+        public static ApplicationRole toRole(this RoleSchema role)
+        {
+            return new ApplicationRole()
+            {
+                createdAt = DateTime.Now,
+                description = role.Discription,
+                Name = role.Name,
+                permissions=role.Permission
+            };
+        }
+        public static ApplicationUser toEmployee(this EmployeeSchema schema,int Id)
         {
             return new ApplicationUser()
             {
@@ -71,7 +82,8 @@ namespace FileTrackingSystem.BL.Extentions
                 PhoneNumber = schema.phone,
                 status = StatusType.Active,
                 gender = schema.gender,
-                CompanyId = Convert.ToInt32(schema.CompanyId),
+                CompanyId = Id,
+                branchId=Convert.ToInt32(schema.branchId),
                 userType = schema.userType,
                 UserName = schema.userName
 

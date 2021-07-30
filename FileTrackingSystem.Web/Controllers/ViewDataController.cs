@@ -30,6 +30,16 @@ namespace FileTrackingSystem.Web.Controllers
         {
             return Ok(_renderar.AdminJson(parameters));
         }
-       
+        [HttpPost]
+        public IActionResult LoadRoles([FromBody] DtParameters parameters)
+        {
+            return Ok(_renderar.RoleJson(parameters));
+        }
+        [HttpPost]
+        public IActionResult LoadEmployes([FromBody] DtParameters parameters)
+        {
+            return Ok(_renderar.EmployeeJson(parameters));
+        }
+
     }
 }

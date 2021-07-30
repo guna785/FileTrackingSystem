@@ -101,7 +101,7 @@ namespace FileTrackingSystem.Schema.Generator
                         {
                             schema.Append(",\"description\":\"" + description + "\"");
                         }
-                        if (isrequired && propType != "Array")
+                        if (isrequired && propType != "Array" && zone!="Edit")
                         {
                             schema.Append(",\"required\":true");
                         }

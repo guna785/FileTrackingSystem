@@ -53,6 +53,56 @@ namespace FileTrackingSystem.Web.Controllers
             }
             return BadRequest("Invalid Request");
         }
-
+        [HttpPost]
+        public async Task<IActionResult> AddAdmin([FromBody] UserSchema schema)
+        {
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("Model state is Invalid");
+                return BadRequest("Invalid Request");
+            }
+            var res = await _insert.InsertUser(schema, HttpContext);
+            if (res)
+            {
+                _logger.LogInformation("Resquest Completed Successfully");
+                var result = new { status = $"New Admin {schema.userName} is Sucessfully Added" };
+                return Ok(result);
+            }
+            return BadRequest("Invalid Request");
+        }
+        [HttpPost]
+        public async Task<IActionResult> AddRole([FromBody] RoleSchema schema)
+        {
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("Model state is Invalid");
+                return BadRequest("Invalid Request");
+            }
+            var res = await _insert.InsertRole(schema, HttpContext.User.Identity.Name);
+            if (res)
+            {
+                _logger.LogInformation("Resquest Completed Successfully");
+                var result = new { status = $"New Role {schema.Name} is Sucessfully Added" };
+                return Ok(result);
+            }
+            return BadRequest("Invalid Request");
+        }
+        [HttpPost]
+        public async Task<IActionResult> AddEmployee([FromBody] EmployeeSchema schema)
+        {
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("Model state is Invalid");
+                return BadRequest("Invalid Request");
+            }
+            var res = await _insert.InsertEmployee(schema, HttpContext);
+            if (res)
+            {
+                _logger.LogInformation("Resquest Completed Successfully");
+                var result = new { status = $"New Employee {schema.userName} is Sucessfully Added" };
+                return Ok(result);
+            }
+            return BadRequest("Invalid Request");
+        }
     }
 }

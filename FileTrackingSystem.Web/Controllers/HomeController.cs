@@ -48,6 +48,10 @@ namespace FileTrackingSystem.Web.Controllers
         {
             return View();
         }
+        public IActionResult Role()
+        {
+            return View();
+        }
         private string schema="";
         public async Task<IActionResult> PopUpModelShow(string ID)
         {
@@ -87,8 +91,34 @@ namespace FileTrackingSystem.Web.Controllers
                 var objId = ID.Split('-')[1];
                 var data = await _builder.ReturnObjectData<UserSchema>(objId == null ? 0 : Convert.ToInt32(objId));
                 ViewBag.val = Newtonsoft.Json.JsonConvert.SerializeObject(data);
-                schema = await _sgenerator.GenerateSchema<UserSchema>("");
+                schema = await _sgenerator.GenerateSchema<UserSchema>("Edit");
                 ViewBag.modalTitle = "EditAdmin";
+            }
+            else if (ID.Contains("AddRole"))
+            {
+                schema = await _sgenerator.GenerateSchema<RoleSchema>("");
+                ViewBag.modalTitle = "AddRole";
+            }
+            else if (ID.Contains("EditRole"))
+            {
+                var objId = ID.Split('-')[1];
+                var data = await _builder.ReturnObjectData<RoleSchema>(objId == null ? 0 : Convert.ToInt32(objId));
+                ViewBag.val = Newtonsoft.Json.JsonConvert.SerializeObject(data);
+                schema = await _sgenerator.GenerateSchema<RoleSchema>("Edit");
+                ViewBag.modalTitle = "EditRole";
+            }
+            else if (ID.Contains("AddEmployee"))
+            {
+                schema = await _sgenerator.GenerateSchema<EmployeeSchema>("");
+                ViewBag.modalTitle = "AddEmployee";
+            }
+            else if (ID.Contains("EditEmployee"))
+            {
+                var objId = ID.Split('-')[1];
+                var data = await _builder.ReturnObjectData<EmployeeSchema>(objId == null ? 0 : Convert.ToInt32(objId));
+                ViewBag.val = Newtonsoft.Json.JsonConvert.SerializeObject(data);
+                schema = await _sgenerator.GenerateSchema<EmployeeSchema>("Edit");
+                ViewBag.modalTitle = "EditEmployee";
             }
             ViewBag.schema = schema;
             return View();

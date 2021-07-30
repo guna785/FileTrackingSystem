@@ -13,7 +13,7 @@ namespace FileTrackingSystem.BL.SchemaModel
         public int Id { get; set; } = 0;
         [GSchema("Name", "Name", "string", true, getHtmlClass = "col-md-6")]
         public string Name { get; set; }
-        [GSchema("CompanyId", "Select Company", "string", true,getEnumVal ="company", getHtmlClass = "col-md-6")]
+        [GSchema("CompanyId", "Select Company", "string", true,getEnumVal ="company", getHtmlClass = "col-md-6",getfieldHtmlClass = "select2")]
         public string CompanyId { get; set; }
     }
 }

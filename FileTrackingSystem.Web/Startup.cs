@@ -35,8 +35,8 @@ namespace FileTrackingSystem.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContextService();
             services.AddGschemaExtentions();
+            services.AddDbContextService();            
             services.AddBLExtensions();
             services.AddScoped(typeof(IAuthenticateSerivce), typeof(AuthenticateSerivce));
             services.AddSession(options =>

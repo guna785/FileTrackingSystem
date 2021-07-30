@@ -1,6 +1,7 @@
 ﻿using FileTrackingSystem.DAL.Contract;
 using FileTrackingSystem.Models.Enums;
 using FileTrackingSystem.Models.Models;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -13,9 +14,13 @@ namespace FileTrackingSystem.Schema.Generator
     public class getEnumList
     {
         private readonly IGenericDbService<Company> _company;
-        public getEnumList(IGenericDbService<Company> company)
+        private readonly IGenericDbService<Branch> _branch;
+        private readonly RoleManager<ApplicationRole> _role;
+        public getEnumList(IGenericDbService<Company> company, IGenericDbService<Branch> branch, RoleManager<ApplicationRole> role)
         {
             _company = company;
+            _branch = branch;
+            _role = role;
         }
         public async Task<string> getEnumRecords(string val, string zone = "")
         {
@@ -29,13 +34,29 @@ namespace FileTrackingSystem.Schema.Generator
             {
                 return Newtonsoft.Json.JsonConvert.SerializeObject(Enum.GetNames(typeof(Gender)));
             }
-            else if (val.Equals("usertype"))
+            else if (val.Equals("usertype-admin") )
             {
-                return Newtonsoft.Json.JsonConvert.SerializeObject(Enum.GetNames(typeof(UserType)).Where(x => !x.Equals("User")).ToList());
-            }                     
+                return Newtonsoft.Json.JsonConvert.SerializeObject(Enum.GetNames(typeof(UserType)).Where(x => x.Equals("Admin")).ToList());
+            }     
+            else if (val.Equals("usertype-User"))
+            {
+                return Newtonsoft.Json.JsonConvert.SerializeObject(Enum.GetNames(typeof(UserType)).Where(x => x.Equals("User")).ToList());
+            }
             else if (val.Equals("company"))
             {
                 return Newtonsoft.Json.JsonConvert.SerializeObject(_company.AsQueryable().Select(x => x.Name).ToList());
+            }
+            else if (val.Equals("branch"))
+            {
+                return Newtonsoft.Json.JsonConvert.SerializeObject(_branch.AsQueryable().Select(x => x.Name).ToList());
+            }
+            else if (val.Equals("role"))
+            {
+                return Newtonsoft.Json.JsonConvert.SerializeObject(_role.Roles.Select(x=>x.Name).ToList());
+            }
+            else if (val.Equals("permission"))
+            {
+                return Newtonsoft.Json.JsonConvert.SerializeObject(Enum.GetNames(typeof(RolePermissions)));
             }
             else if (val.Contains("month"))
             {

@@ -2,6 +2,11 @@
 var editCompanyUrl = "/EditData/EditCompany";
 var addBranchUrl = "/InsertData/AddBranch";
 var editBranchUrl = "/EditData/EditBranch";
+var addAdminUrl = "/InsertData/AddAdmin";
+var editAdminUrl = "/EditData/EditAdmin";
+var addRoleUrl = "/InsertData/AddRole";
+var editRoleUrl = "/EditData/EditRole";
+
 
 
 function JsonPOST(url, data) {
@@ -46,8 +51,23 @@ function DoAction(action, data) {
         JsonPOST(editBranchUrl, data);
         LoadData();
     }
-
-   
+    if (action === "AddAdmin") {
+        JsonPOST(addAdminUrl, data);
+        LoadData();
+    }
+    else if (action === "EditAdmin") {
+        JsonPOST(editAdminUrl, data);
+        LoadData();
+    }
+    if (action === "AddRole") {
+        JsonPOST(addRoleUrl, data);
+        LoadData();
+    }
+    else if (action === "EditRole") {
+        JsonPOST(editRoleUrl, data);
+        LoadData();
+    }
+  
 
 }
 

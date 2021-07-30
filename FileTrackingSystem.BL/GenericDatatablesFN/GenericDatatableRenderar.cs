@@ -177,6 +177,8 @@ namespace FileTrackingSystem.BL.GenericDatatablesFN
                 orderCriteria = "createdAt";
                 orderAscendingDirection = false;
             }
+            var branch = _branch.AsQueryable();
+            var company = _company.AsQueryable();
             var result = _user.Users.Where(x => x.userType == UserType.User);
             if (!string.IsNullOrEmpty(searchBy))
             {
@@ -185,6 +187,8 @@ namespace FileTrackingSystem.BL.GenericDatatablesFN
                                            r.Email != null && r.Email.ToUpper().Contains(searchBy.ToUpper()) ||
                                            r.UserName != null && r.UserName.ToUpper().Contains(searchBy.ToUpper())
                                           );
+                branch = branch.Where(r => r.Name != null && r.Name.ToUpper().Contains(searchBy.ToUpper()));
+                company = company.Where(r => r.Name != null && r.Name.ToUpper().Contains(searchBy.ToUpper()));
             }
 
             result = orderAscendingDirection ? result.AsQueryable().OrderByDynamic(orderCriteria, DtOrderDir.Asc) : result.AsQueryable().OrderByDynamic(orderCriteria, DtOrderDir.Desc);
@@ -203,6 +207,25 @@ namespace FileTrackingSystem.BL.GenericDatatablesFN
                 data = result
                     .Skip(parameters.Start)
                     .Take(parameters.Length)
+                     .AsEnumerable().Select(x => new AdminView()
+                     {
+                         gender = x.gender,
+                         Email = x.Email,
+                         address = x.address,
+                         createdAt = x.createdAt,
+                         branchId = branch.Where(y => y.Id == x.branchId).FirstOrDefault().Name,
+                         CompanyId = company.Where(y => y.Id == x.CompanyId).FirstOrDefault().Name,
+                         idNumber = x.idNumber,
+                         Name = x.Name,
+                         idType = x.idType,
+                         img = x.img,
+                         PhoneNumber = x.PhoneNumber,
+                         status = x.status,
+                         UserName = x.UserName,
+                         userType = x.userType,
+                         Id = x.Id
+
+                     })
                     .ToList()
             };
         }

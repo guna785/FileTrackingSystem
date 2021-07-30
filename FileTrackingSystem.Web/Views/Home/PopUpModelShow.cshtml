@@ -33,7 +33,7 @@
 
 
 <script>
-    //$('.select2').select2()
+    $('.select2').select2()
     var sc = '@ViewBag.schema';
     debugger;
     var JSONdata = JSON.parse(sc.replace(/&quot;/g, '"'));
@@ -55,7 +55,7 @@
             } else {
                 try {
                     if (document.body.contains(document.querySelector(".selectMultiple"))) {
-                        values['customers'] = JSON.stringify($(".selectMultiple").val());
+                        values['Permission'] = JSON.stringify($(".selectMultiple").val());
                     }
                    // values['__RequestVerificationToken'] = $("[name='__RequestVerificationToken']").val();
                     if (document.body.contains(document.querySelector('input[type="file"]'))) {

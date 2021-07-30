@@ -4,6 +4,7 @@ using FileTrackingSystem.BL.SchemaModel;
 using FileTrackingSystem.DAL.Contract;
 using FileTrackingSystem.Models.Enums;
 using FileTrackingSystem.Models.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using System;
@@ -20,15 +21,19 @@ namespace FileTrackingSystem.BL.RestControl
         private readonly IGenericDbService<Branch> _branch;
         private readonly IGenericDbService<Log> _log;
         private readonly UserManager<ApplicationUser> _user;
+        private readonly RoleManager<ApplicationRole> _role;
         private readonly ILogger<InsertControl> _logger;
+        private readonly IIdentityUserService _service;
         public InsertControl(IGenericDbService<Company> company, UserManager<ApplicationUser> user, ILogger<InsertControl> logger,
-            IGenericDbService<Log> log, IGenericDbService<Branch> branch)
+            IGenericDbService<Log> log, IGenericDbService<Branch> branch, RoleManager<ApplicationRole> role, IIdentityUserService service)
         {
             _user = user;
             _company = company;
             _branch = branch;
             _logger = logger;
             _log = log;
+            _role = role;
+            _service = service;
         }
 
         public async Task<bool> InsertBranch(BranchSchema model, string user)
@@ -70,20 +75,32 @@ namespace FileTrackingSystem.BL.RestControl
             }
         }
 
-        public async Task<bool> InsertEmployee(EmployeeSchema model, string user)
+        public async Task<bool> InsertEmployee(EmployeeSchema model,HttpContext context)
         {
             try
             {
                 _logger.LogInformation("Employee Data Addition Starts ....");
                 _logger.LogInformation(Newtonsoft.Json.JsonConvert.SerializeObject(model));
-                var res = await _user.CreateAsync(model.toEmployee(), model.password);
+                var brnch = _branch.AsQueryable().Where(x => x.Name == model.Name).FirstOrDefault();
+                var res = await _user.CreateAsync(model.toEmployee(brnch.Id), model.password);
+
                 if (res.Succeeded)
                 {
+                    var rls = model.Roles.Split(',');
+                    var usr = await _user.FindByNameAsync(model.userName);
+                    foreach (var r in rls)
+                    {                        
+                        //var rol =await _role.FindByNameAsync(r);
+                       await  _user.AddToRoleAsync(usr, r);                       
+                    }
+                    await _service.ConfirmEmailGenerate(usr, context);
+                    _log.Create(MapperAction.CreateLog("Insert EMployee", $"Employee {model.userName} is Added successfully by {context.User.Identity.Name}", context.User.Identity.Name, LogType.Event));
+
                     _logger.LogInformation("Employee Data Addition Done ....");
                     return true;
                 }
                 _logger.LogError("Error : " + Newtonsoft.Json.JsonConvert.SerializeObject(res.Errors.ToList()));
-                return true;
+                return false;
             }
             catch (Exception ex)
             {
@@ -92,20 +109,48 @@ namespace FileTrackingSystem.BL.RestControl
             }
         }
 
-        public async Task<bool> InsertUser(UserSchema model, string user)
+        public async Task<bool> InsertRole(RoleSchema model, string user)
+        {
+            try
+            {
+                _logger.LogInformation("Role Data Addition Starts ....");
+                _logger.LogInformation(Newtonsoft.Json.JsonConvert.SerializeObject(model));
+                var res = await _role.CreateAsync(model.toRole());
+                if (res.Succeeded)
+                {
+                    _logger.LogInformation("Role Data Addition Done ....");
+                    return true;
+                }
+                _logger.LogError("Error : " + Newtonsoft.Json.JsonConvert.SerializeObject(res.Errors.ToList()));
+                return false;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+                return false;
+            }
+        }
+
+        public async Task<bool> InsertUser(UserSchema model,HttpContext context)
         {
             try
             {
                 _logger.LogInformation("Admin User Data Addition Starts ....");
                 _logger.LogInformation(Newtonsoft.Json.JsonConvert.SerializeObject(model));
-                var res = await _user.CreateAsync(model.toUser(), model.password);
+                var brnch = _branch.AsQueryable().Where(x => x.Name == model.branchId).FirstOrDefault();
+                model.branchId = brnch.Id.ToString();
+                var res = await _user.CreateAsync(model.toUser(brnch.CompanyId), model.password);
                 if (res.Succeeded)
                 {
+                    var usr = await _user.FindByNameAsync(model.userName);
+                    await _service.ConfirmEmailGenerate(usr, context);
+                    _log.Create(MapperAction.CreateLog("Insert Admin", $"Admin {model.userName} is Added successfully by {context.User.Identity.Name}", context.User.Identity.Name, LogType.Event));
+
                     _logger.LogInformation("Admin User Data Addition Done ....");
                     return true;
                 }
                 _logger.LogError("Error : " + Newtonsoft.Json.JsonConvert.SerializeObject(res.Errors.ToList()));
-                return true;
+                return false;
             }
             catch (Exception ex)
             {

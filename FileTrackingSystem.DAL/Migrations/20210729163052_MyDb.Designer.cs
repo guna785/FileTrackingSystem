@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FileTrackingSystem.DAL.Migrations
 {
     [DbContext(typeof(IdentityContext))]
-    [Migration("20210727043039_MyDb")]
+    [Migration("20210729163052_MyDb")]
     partial class MyDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -41,6 +41,9 @@ namespace FileTrackingSystem.DAL.Migrations
                         .HasColumnType("datetime");
 
                     b.Property<string>("description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("permissions")
                         .HasColumnType("text");
 
                     b.HasKey("Id");

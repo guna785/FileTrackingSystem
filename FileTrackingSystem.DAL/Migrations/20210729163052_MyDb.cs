@@ -16,6 +16,7 @@ namespace FileTrackingSystem.DAL.Migrations
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     description = table.Column<string>(type: "text", nullable: true),
                     createdAt = table.Column<DateTime>(type: "datetime", nullable: false),
+                    permissions = table.Column<string>(type: "text", nullable: true),
                     Name = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true),
                     NormalizedName = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "text", nullable: true)

@@ -13,5 +13,6 @@ namespace FileTrackingSystem.Models.Models
         
         public string description { get; set; }
         public DateTime createdAt { get; set; }
+        public string permissions { get; set; }
     }
 }

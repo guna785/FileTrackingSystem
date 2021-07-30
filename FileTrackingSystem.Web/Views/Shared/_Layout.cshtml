@@ -36,7 +36,7 @@
     <link href="~/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet">
     <link href="~/vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
 
-    <link href="~/vendors/select2/dist/css/select2.min.css" rel="stylesheet" />
+
     <style>
         .ajaxloader {
             display: none;
@@ -103,7 +103,8 @@
     <script src="~/JsonSchemaForm/deps/opt/jsv.js"></script>
 
     <!--Select 2-->
-    <script src="~/vendors/select2/dist/js/select2.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <!-- Datatables -->
     <script src="~/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
     <script src="~/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
@@ -126,6 +127,7 @@
     <!--Sweet Alert-->
     <script src="~/sweetAlert/sweetalert.min.js"></script>
     <link rel="stylesheet" href="~/sweetAlert/sweetalert.css">
+
 </head>
 
 <body class="nav-md">
@@ -146,7 +148,7 @@
                         </div>
                         <div class="profile_info">
                             <span>Welcome,</span>
-                            <h2>John Doe</h2>
+                            <h2>@Context.User.Identity.Name</h2>
                         </div>
                     </div>
                     <!-- /menu profile quick info -->
@@ -179,8 +181,8 @@
                                 <li>
                                     <a><i class="fa fa-desktop"></i> Employees <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
-                                        <li><a href="general_elements.html">Employees</a></li>
-                                        <li><a href="media_gallery.html">Roles</a></li>
+                                        <li><a asp-action="Employee" asp-controller="Home">Employees</a></li>
+                                        <li><a asp-action="Role" asp-controller="Home">Roles</a></li>
                                     </ul>
                                 </li>
                                 <li>
@@ -241,7 +243,7 @@
                         <ul class=" navbar-right">
                             <li class="nav-item dropdown open" style="padding-left: 15px;">
                                 <a href="javascript:;" class="user-profile dropdown-toggle" aria-haspopup="true" id="navbarDropdown" data-toggle="dropdown" aria-expanded="false">
-                                    <img src="~/production/images/user.png" alt="">John Doe
+                                    <img src="~/production/images/user.png" alt="">@Context.User.Identity.Name
                                 </a>
                                 <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href="javascript:;"> Profile</a>
@@ -345,9 +347,13 @@
     <script src="~/build/js/custom.min.js"></script>
     <script>
         $body = $("body");
+
         $(document).on({
             ajaxStart: function () { $body.addClass("loading"); },
             ajaxStop: function () { $body.removeClass("loading"); }
+        });
+        $(document).ready(function () {
+            $('.select2').select2();
         });
     </script>
 </body>

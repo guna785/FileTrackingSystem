@@ -199,6 +199,7 @@ namespace FileTrackingSystem.DAL.Migrations.ApplicationDb
                     jobTypeId = table.Column<int>(type: "int", nullable: false),
                     clientType = table.Column<int>(type: "int", nullable: false),
                     clientId = table.Column<int>(type: "int", nullable: false),
+                    companyId = table.Column<int>(type: "int", nullable: false),
                     ApplicationUserId = table.Column<int>(type: "int", nullable: false),
                     AllotedTime = table.Column<DateTime>(type: "datetime", nullable: false),
                     status = table.Column<int>(type: "int", nullable: false),
@@ -213,6 +214,12 @@ namespace FileTrackingSystem.DAL.Migrations.ApplicationDb
                         name: "FK_Job_Client_clientId",
                         column: x => x.clientId,
                         principalTable: "Client",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Job_Company_companyId",
+                        column: x => x.companyId,
+                        principalTable: "Company",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -386,6 +393,11 @@ namespace FileTrackingSystem.DAL.Migrations.ApplicationDb
                 column: "clientId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Job_companyId",
+                table: "Job",
+                column: "companyId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Job_jobTypeId",
                 table: "Job",
                 column: "jobTypeId");
@@ -454,13 +466,13 @@ namespace FileTrackingSystem.DAL.Migrations.ApplicationDb
                 name: "Invoice");
 
             migrationBuilder.DropTable(
-                name: "Company");
-
-            migrationBuilder.DropTable(
                 name: "Job");
 
             migrationBuilder.DropTable(
                 name: "Client");
+
+            migrationBuilder.DropTable(
+                name: "Company");
 
             migrationBuilder.DropTable(
                 name: "JobType");

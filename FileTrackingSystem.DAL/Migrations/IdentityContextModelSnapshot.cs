@@ -41,6 +41,9 @@ namespace FileTrackingSystem.DAL.Migrations
                     b.Property<string>("description")
                         .HasColumnType("text");
 
+                    b.Property<string>("permissions")
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedName")

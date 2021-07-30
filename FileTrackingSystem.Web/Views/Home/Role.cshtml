@@ -1,11 +1,11 @@
 ﻿
 @{
-    ViewData["Title"] = "Admin";
+    ViewData["Title"] = "Role";
 }
 <div class="col-md-12 col-sm-12 ">
     <div class="x_panel">
         <div class="x_title">
-            <h2>Admin <small>List</small> <a class="btn btn-primary" style="color:white;" onclick="AddNew();">Add New</a></h2>
+            <h2>Role <small>List</small> <a class="btn btn-primary" style="color:white;" onclick="AddNew();">Add New</a></h2>
             <ul class="nav navbar-right panel_toolbox">
                 <li>
                     <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
@@ -31,11 +31,7 @@
                             <thead>
                                 <tr>
                                     <th>Name</th>
-                                    <th>User Name</th>
-                                    <th>Phone</th>
-                                    <th>Email</th>
-                                    <th>Company</th>
-                                    <th>Branch</th>
+                                    <th>Discription</th>                                   
                                     <th>Created At</th>
                                     <th>Action</th>
                                 </tr>
@@ -67,6 +63,7 @@
     </div>
 </div>
 <script>
+    $('.select2').select2();
     function LoadData() {
         $("#DesignDatatable").DataTable({
             dom: "Blfrtip",
@@ -106,7 +103,7 @@
             searching: { regex: true },
             // Ajax Filter
             ajax: {
-                url: "/ViewData/LoadAdmins/",
+                url: "/ViewData/LoadRoles/",
                 type: "POST",
                 contentType: "application/json",
                 dataType: "json",
@@ -117,11 +114,8 @@
             // Columns Setups
             columns: [
                 { data: "name" },
-                { data: "userName" },
-                { data: "phoneNumber" },
-                { data: "email" },
-                { data: "companyId" },
-                { data: "branchId" },
+               
+                { data: "description" },
                 {
                     data: "createdAt",
                     render: function (data, type, row) {
@@ -139,7 +133,7 @@
                 {
                     data: null,
                     render: function (data, type, row) {
-                        return '<a href="#" class="btn btn-primary  btn-sm checkbox-toggle" title="Edit" onclick="editAdmin(\'' + row.id + '\');"><i class="fa fa-edit"></i></a>  <a class="btn btn-danger  btn-sm checkbox-toggle" onclick="delBranch(\'' + row.id + '\');" title="delete"><i class="fa fa-trash"></i></a>';
+                        return '<a href="#" class="btn btn-primary  btn-sm checkbox-toggle" title="Edit" onclick="editBranch(\'' + row.id + '\');"><i class="fa fa-edit"></i></a>  <a class="btn btn-danger  btn-sm checkbox-toggle" onclick="delBranch(\'' + row.id + '\');" title="delete"><i class="fa fa-trash"></i></a>';
                     }
                 }
             ],
@@ -164,14 +158,14 @@
         LoadData();
     });
     function AddNew() {
-        $("#mbody").load("/Home/PopUpModelShow/AddAdmin", function () {
-            $("#mtitle").text("Add Admin");
+        $("#mbody").load("/Home/PopUpModelShow/AddRole", function () {
+            $("#mtitle").text("Add Branch");
             $("#AreaModel").modal({ backdrop: 'static', keyboard: false });
         });
     }
-    function editAdmin(id) {
-        $("#mbody").load("/Home/PopUpModelShow/EditAdmin-" + id, function () {
-            $("#mtitle").text("Edit Admin");
+    function editBranch(id) {
+        $("#mbody").load("/Home/PopUpModelShow/EditRole-" + id, function () {
+            $("#mtitle").text("Edit Branch");
             $("#AreaModel").modal({ backdrop: 'static', keyboard: false });
         });
     }

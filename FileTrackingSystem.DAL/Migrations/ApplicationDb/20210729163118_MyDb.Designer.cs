@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FileTrackingSystem.DAL.Migrations.ApplicationDb
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210727043135_MyDb")]
+    [Migration("20210729163118_MyDb")]
     partial class MyDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -282,6 +282,9 @@ namespace FileTrackingSystem.DAL.Migrations.ApplicationDb
                     b.Property<int>("clientType")
                         .HasColumnType("int");
 
+                    b.Property<int>("companyId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("createdAt")
                         .HasColumnType("datetime");
 
@@ -297,6 +300,8 @@ namespace FileTrackingSystem.DAL.Migrations.ApplicationDb
                     b.HasKey("Id");
 
                     b.HasIndex("clientId");
+
+                    b.HasIndex("companyId");
 
                     b.HasIndex("jobTypeId");
 
@@ -547,6 +552,12 @@ namespace FileTrackingSystem.DAL.Migrations.ApplicationDb
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("FileTrackingSystem.Models.Models.Company", null)
+                        .WithMany("Jobs")
+                        .HasForeignKey("companyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("FileTrackingSystem.Models.Models.JobType", null)
                         .WithMany("jobs")
                         .HasForeignKey("jobTypeId")
@@ -607,6 +618,8 @@ namespace FileTrackingSystem.DAL.Migrations.ApplicationDb
                     b.Navigation("Branches");
 
                     b.Navigation("Invoices");
+
+                    b.Navigation("Jobs");
 
                     b.Navigation("Payments");
                 });
