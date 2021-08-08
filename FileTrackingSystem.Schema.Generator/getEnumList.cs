@@ -22,46 +22,54 @@ namespace FileTrackingSystem.Schema.Generator
             _branch = branch;
             _role = role;
         }
-        public async Task<string> getEnumRecords(string val, string zone = "")
+        public async Task<dynamic> getEnumRecords(string val, string zone = "")
         {
 
 
             if (val.Equals("status"))
             {
-                return Newtonsoft.Json.JsonConvert.SerializeObject(Enum.GetNames(typeof(StatusType)));
+                return Enum.GetNames(typeof(StatusType));
             }
             else if (val.Equals("gender"))
             {
-                return Newtonsoft.Json.JsonConvert.SerializeObject(Enum.GetNames(typeof(Gender)));
+                return Enum.GetNames(typeof(Gender));
             }
             else if (val.Equals("usertype-admin") )
             {
-                return Newtonsoft.Json.JsonConvert.SerializeObject(Enum.GetNames(typeof(UserType)).Where(x => x.Equals("Admin")).ToList());
+                return Enum.GetNames(typeof(UserType)).Where(x => x.Equals("Admin")).ToList();
             }     
             else if (val.Equals("usertype-User"))
             {
-                return Newtonsoft.Json.JsonConvert.SerializeObject(Enum.GetNames(typeof(UserType)).Where(x => x.Equals("User")).ToList());
+                return Enum.GetNames(typeof(UserType)).Where(x => x.Equals("User")).ToList();
             }
             else if (val.Equals("company"))
             {
-                return Newtonsoft.Json.JsonConvert.SerializeObject(_company.AsQueryable().Select(x => x.Name).ToList());
+                return _company.AsQueryable().Select(x => x.Name).ToList();
             }
             else if (val.Equals("branch"))
             {
-                return Newtonsoft.Json.JsonConvert.SerializeObject(_branch.AsQueryable().Select(x => x.Name).ToList());
+                return _branch.AsQueryable().Select(x => x.Name).ToList();
             }
             else if (val.Equals("role"))
             {
-                return Newtonsoft.Json.JsonConvert.SerializeObject(_role.Roles.Select(x=>x.Name).ToList());
+                return _role.Roles.Select(x=>x.Name).ToList();
             }
             else if (val.Equals("permission"))
             {
-                return Newtonsoft.Json.JsonConvert.SerializeObject(Enum.GetNames(typeof(RolePermissions)));
+                return Enum.GetNames(typeof(RolePermissions));
+            }
+            else if (val.Equals("clientType"))
+            {
+                return Enum.GetNames(typeof(ClientType));
+            }
+            else if (val.Equals("idProoftype"))
+            {
+                return Enum.GetNames(typeof(IdProofType));
             }
             else if (val.Contains("month"))
             {
                 var ls = new List<string>(CultureInfo.CurrentCulture.DateTimeFormat.AbbreviatedMonthNames);
-                return Newtonsoft.Json.JsonConvert.SerializeObject(ls);
+                return ls;
             }
             else if (val.Contains("year"))
             {
@@ -72,10 +80,10 @@ namespace FileTrackingSystem.Schema.Generator
                     ls.Add(y.ToString());
                     y++;
                 }
-                return Newtonsoft.Json.JsonConvert.SerializeObject(ls);
+                return ls;
             }
 
-            return "";
+            return null;
         }
 
         public async Task<string> getVlidationMessage(string val)

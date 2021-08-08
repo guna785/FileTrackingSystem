@@ -40,6 +40,11 @@ namespace FileTrackingSystem.Web.Controllers
         {
             return Ok(_renderar.EmployeeJson(parameters));
         }
+        [HttpPost]
+        public IActionResult LoadClients([FromBody] DtParameters parameters)
+        {
+            return Ok(_renderar.ClientJson(parameters));
+        }
 
     }
 }

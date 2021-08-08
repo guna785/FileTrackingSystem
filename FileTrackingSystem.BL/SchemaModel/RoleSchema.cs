@@ -16,6 +16,6 @@ namespace FileTrackingSystem.BL.SchemaModel
         [GSchema("Discription", "Discription", "string", true, getHtmlClass = "col-md-12")]
         public string Discription { get; set; }
         [GSchema("Permission", "Permissions", "string", true, getEnumVal ="permission", getHtmlClass = "col-md-12",getfieldHtmlClass = "select2 selectMultiple")]
-        public string Permission { get; set; }
+        public dynamic Permission { get; set; }
     }
 }

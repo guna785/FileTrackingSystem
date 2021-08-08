@@ -87,6 +87,15 @@
             }
         }
     });
-
+    setTimeout(function () {
+        if (document.body.contains(document.querySelector(".selectMultiple"))) {
+            if (val.Permission) {
+                $(".selectMultiple").val(val.Permission);
+            }            
+        }
+        if (document.body.contains(document.querySelector(".accept-image"))) {
+            $(".accept-image").attr('accept', 'image/* ');
+        }
+    },50)
     $(".selectMultiple").attr("multiple", "true");
 </script>

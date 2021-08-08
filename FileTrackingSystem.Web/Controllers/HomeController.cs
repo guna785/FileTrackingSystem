@@ -17,13 +17,13 @@ namespace FileTrackingSystem.Web.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly GSgenerator _sgenerator;
+        private readonly SchemaGenerator _schema;
         private readonly EditBuilder _builder;
-        public HomeController(ILogger<HomeController> logger, GSgenerator sgenerator, EditBuilder builder)
+        public HomeController(ILogger<HomeController> logger, EditBuilder builder, SchemaGenerator schema)
         {
             _logger = logger;
-            _sgenerator = sgenerator;
             _builder = builder;
+            _schema = schema;
         }
         public IActionResult Index()
         {
@@ -48,7 +48,19 @@ namespace FileTrackingSystem.Web.Controllers
         {
             return View();
         }
+        public IActionResult Client()
+        {
+            return View();
+        }
         public IActionResult Role()
+        {
+            return View();
+        }
+        public IActionResult JobType()
+        {
+            return View();
+        }
+        public IActionResult Document()
         {
             return View();
         }
@@ -57,7 +69,8 @@ namespace FileTrackingSystem.Web.Controllers
         {
             if (ID.Contains("AddCompany"))
             {
-                schema = await _sgenerator.GenerateSchema<CompanySchema>("");
+                schema = await _schema.Generate<CompanySchema>(HttpContext);
+               // schema = await _sgenerator.GenerateSchema<CompanySchema>("");
                 ViewBag.modalTitle = "AddCompany";
             }
             else if (ID.Contains("EditCompany"))
@@ -65,12 +78,12 @@ namespace FileTrackingSystem.Web.Controllers
                 var objId = ID.Split('-')[1];
                 var data = await _builder.ReturnObjectData<CompanySchema>(objId == null ? 0 : Convert.ToInt32(objId));
                 ViewBag.val = Newtonsoft.Json.JsonConvert.SerializeObject(data);
-                schema = await _sgenerator.GenerateSchema<CompanySchema>("");
+                schema = await _schema.Generate<CompanySchema>(HttpContext);
                 ViewBag.modalTitle = "EditCompany";
             }
            else if (ID.Contains("AddBranch"))
             {
-                schema = await _sgenerator.GenerateSchema<BranchSchema>("");
+                schema = await _schema.Generate<BranchSchema>(HttpContext);
                 ViewBag.modalTitle = "AddBranch";
             }
             else if (ID.Contains("EditBranch"))
@@ -78,12 +91,12 @@ namespace FileTrackingSystem.Web.Controllers
                 var objId = ID.Split('-')[1];
                 var data = await _builder.ReturnObjectData<BranchSchema>(objId == null ? 0 : Convert.ToInt32(objId));
                 ViewBag.val = Newtonsoft.Json.JsonConvert.SerializeObject(data);
-                schema = await _sgenerator.GenerateSchema<BranchSchema>("");
+                schema = await _schema.Generate<BranchSchema>(HttpContext);
                 ViewBag.modalTitle = "EditBranch";
             }
             else if (ID.Contains("AddAdmin"))
             {
-                schema = await _sgenerator.GenerateSchema<UserSchema>("");
+                schema = await _schema.Generate<UserSchema>(HttpContext);
                 ViewBag.modalTitle = "AddAdmin";
             }
             else if (ID.Contains("EditAdmin"))
@@ -91,12 +104,12 @@ namespace FileTrackingSystem.Web.Controllers
                 var objId = ID.Split('-')[1];
                 var data = await _builder.ReturnObjectData<UserSchema>(objId == null ? 0 : Convert.ToInt32(objId));
                 ViewBag.val = Newtonsoft.Json.JsonConvert.SerializeObject(data);
-                schema = await _sgenerator.GenerateSchema<UserSchema>("Edit");
+                schema = await _schema.Generate<UserSchema>(HttpContext);
                 ViewBag.modalTitle = "EditAdmin";
             }
             else if (ID.Contains("AddRole"))
             {
-                schema = await _sgenerator.GenerateSchema<RoleSchema>("");
+                schema = await _schema.Generate<RoleSchema>(HttpContext);
                 ViewBag.modalTitle = "AddRole";
             }
             else if (ID.Contains("EditRole"))
@@ -104,12 +117,12 @@ namespace FileTrackingSystem.Web.Controllers
                 var objId = ID.Split('-')[1];
                 var data = await _builder.ReturnObjectData<RoleSchema>(objId == null ? 0 : Convert.ToInt32(objId));
                 ViewBag.val = Newtonsoft.Json.JsonConvert.SerializeObject(data);
-                schema = await _sgenerator.GenerateSchema<RoleSchema>("Edit");
+                schema = await _schema.Generate<RoleSchema>(HttpContext);
                 ViewBag.modalTitle = "EditRole";
             }
             else if (ID.Contains("AddEmployee"))
             {
-                schema = await _sgenerator.GenerateSchema<EmployeeSchema>("");
+                schema = await _schema.Generate<EmployeeSchema>(HttpContext);
                 ViewBag.modalTitle = "AddEmployee";
             }
             else if (ID.Contains("EditEmployee"))
@@ -117,8 +130,21 @@ namespace FileTrackingSystem.Web.Controllers
                 var objId = ID.Split('-')[1];
                 var data = await _builder.ReturnObjectData<EmployeeSchema>(objId == null ? 0 : Convert.ToInt32(objId));
                 ViewBag.val = Newtonsoft.Json.JsonConvert.SerializeObject(data);
-                schema = await _sgenerator.GenerateSchema<EmployeeSchema>("Edit");
+                schema = await _schema.Generate<EmployeeSchema>(HttpContext);
                 ViewBag.modalTitle = "EditEmployee";
+            }
+            else if (ID.Contains("AddClient"))
+            {
+                schema = await _schema.Generate<ClientSchema>(HttpContext);
+                ViewBag.modalTitle = "AddClient";
+            }
+            else if (ID.Contains("EditClient"))
+            {
+                var objId = ID.Split('-')[1];
+                var data = await _builder.ReturnObjectData<ClientSchema>(objId == null ? 0 : Convert.ToInt32(objId));
+                ViewBag.val = Newtonsoft.Json.JsonConvert.SerializeObject(data);
+                schema = await _schema.Generate<ClientSchema>(HttpContext);
+                ViewBag.modalTitle = "EditClient";
             }
             ViewBag.schema = schema;
             return View();

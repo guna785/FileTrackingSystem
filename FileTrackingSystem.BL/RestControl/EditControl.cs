@@ -65,6 +65,11 @@ namespace FileTrackingSystem.BL.RestControl
             }
         }
 
+        public Task<bool> EditClient(ClientSchema model, string user)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<bool> EditCompany(CompanySchema model, string user)
         {
             try
@@ -110,9 +115,55 @@ namespace FileTrackingSystem.BL.RestControl
            
         }
 
-        public Task<bool> EditEmployee(EmployeeSchema model, string user)
+        public async Task<bool> EditEmployee(EmployeeSchema model, string user)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _logger.LogInformation("Admin Data Edition Starts ....");
+                _logger.LogInformation(Newtonsoft.Json.JsonConvert.SerializeObject(model));
+                _logger.LogInformation("Admin Data Addition Starts ....");
+                _logger.LogInformation($"Checks Admin Name {model.Name} Exists ");
+                var usr = await _user.FindByIdAsync(model.Id.ToString());
+                if (usr != null)
+                {
+                    var brnch = _branch.AsQueryable().Where(x => x.Name == model.branchId).FirstOrDefault();
+                    usr.Name = model.Name;
+                    usr.PhoneNumber = model.phone;
+                    usr.Email = model.email;
+                    usr.gender = model.gender;
+                    usr.UserName = model.userName;
+                    usr.branchId = brnch.Id;
+                    usr.CompanyId = brnch.CompanyId;
+                    if (!string.IsNullOrEmpty(model.password))
+                    {
+                        usr.PasswordHash = _user.PasswordHasher.HashPassword(usr, model.password);
+                    }
+
+                    await _user.UpdateAsync(usr);
+                    var rls = model.Roles.Split(',');
+                    foreach (var r in rls)
+                    {
+                        await _user.RemoveFromRoleAsync(usr, r);
+                        await _user.AddToRoleAsync(usr, r);
+                        //var rol =await _role.FindByNameAsync(r);
+                    }
+                   
+                    _log.Create(MapperAction.CreateLog("Edit Admin", $"Admin {model.Name} is Updated successfully by {user}", user, LogType.Event));
+                    _logger.LogInformation("Admin Data Edition Done ....");
+                    return true;
+                }
+                else
+                {
+                    _logger.LogError($"Compay {model.Name} not Exoists....");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+                return false;
+            }
+
         }
 
         public async Task<bool> EditRole(RoleSchema model, string user)

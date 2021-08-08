@@ -12,7 +12,8 @@ namespace FileTrackingSystem.Schema.Generator
         public static IServiceCollection AddGschemaExtentions(this IServiceCollection services)
         {
             services.AddScoped<getEnumList>();
-            services.AddScoped<GSgenerator>();
+           // services.AddScoped<GSgenerator>();
+            services.AddScoped<SchemaGenerator>();
             return services;
         }
     }

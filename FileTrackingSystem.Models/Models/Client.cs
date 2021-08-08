@@ -14,10 +14,10 @@ namespace FileTrackingSystem.Models.Models
         public string fatherName { get; set; }
         public string Pan { get; set; }
         public string Phone { get; set; }
-        public string Gender { get; set; }
+        public Gender Gender { get; set; }
         public ClientType clientType { get; set; }
         public string Address { get; set; }
-        public string idProof { get; set; }
+        public byte[] idProof { get; set; }
         public IdProofType idProoftype { get; set; }
         public int createdBy { get; set; }
         public DateTime Dob { get; set; }

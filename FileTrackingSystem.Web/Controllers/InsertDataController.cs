@@ -104,5 +104,22 @@ namespace FileTrackingSystem.Web.Controllers
             }
             return BadRequest("Invalid Request");
         }
+        [HttpPost]
+        public async Task<IActionResult> AddClient([FromBody] ClientSchema schema)
+        {
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("Model state is Invalid");
+                return BadRequest("Invalid Request");
+            }
+            var res = await _insert.InsertClient(schema, HttpContext);
+            if (res)
+            {
+                _logger.LogInformation("Resquest Completed Successfully");
+                var result = new { status = $"New Client {schema.name} is Sucessfully Added" };
+                return Ok(result);
+            }
+            return BadRequest("Invalid Request");
+        }
     }
 }

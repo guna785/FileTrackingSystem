@@ -12,19 +12,20 @@ namespace FileTrackingSystem.BL.SchemaBuilder
 {
     public class EditBuilder
     {
-
+        private readonly IGenericDbService<Client> _client;
         private readonly IGenericDbService<Company> _company;
         private readonly IGenericDbService<Branch> _branch;
         private readonly UserManager<ApplicationUser> _user;
         private readonly RoleManager<ApplicationRole> _role;
         public EditBuilder(IGenericDbService<Company> company,
             UserManager<ApplicationUser> user, IGenericDbService<Branch> branch,
-            RoleManager<ApplicationRole> role)
+            RoleManager<ApplicationRole> role, IGenericDbService<Client> client)
         {
             _branch = branch;
             _company = company;
             _user = user;
             _role = role;
+            _client = client;
         }
         public async Task<T> ReturnObjectData<T>(int id)
         {
@@ -80,9 +81,47 @@ namespace FileTrackingSystem.BL.SchemaBuilder
                 return (T)Convert.ChangeType(new RoleSchema()
                 {
                     Id = obdata.Id,
-                    Discription=obdata.description,
+                    Discription = obdata.description,
                     Name = obdata.Name,
+                    Permission = Newtonsoft.Json.JsonConvert.DeserializeObject<List<string>>(obdata.permissions)
                 }, typeof(T));
+            }
+            else if (obj.Equals("EmployeeSchema"))
+            {
+                var obdata = _user.Users.Where(x => x.Id == id).FirstOrDefault();
+                return (T)Convert.ChangeType(new EmployeeSchema()
+                {
+                    Id = obdata.Id,
+                    branchId = _branch.FindById(obdata.branchId).Name,
+                    Name = obdata.Name,
+                    email = obdata.Email,
+                    gender = obdata.gender,
+                    phone = obdata.PhoneNumber,
+                    userName = obdata.UserName,
+                    userType = obdata.userType
+                }, typeof(T));
+            }
+            else if (obj.Equals("ClientSchema"))
+            {
+                var obdata = _client.FindById(id);
+                return (T)Convert.ChangeType(new ClientSchema()
+                {
+                    Address = obdata.Address,
+                    clientType = obdata.clientType,
+                    ContactPersonName = obdata.ContactPersonName,
+                    Dob = obdata.Dob,
+                    Email = obdata.Email,
+                    fatherName = obdata.fatherName,
+                    Gender = obdata.Gender,
+                    GSTNo = obdata.GSTNo,
+                    Id = obdata.Id,
+                    idProoftype = obdata.idProoftype,
+                    name = obdata.name,
+                    Pan = obdata.Pan,
+                    Phone = obdata.Phone,
+                    Remarks = obdata.Remarks
+                }, typeof(T));
+
             }
 
             return (T)Convert.ChangeType(null, typeof(T));

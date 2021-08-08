@@ -15,6 +15,7 @@ namespace FileTrackingSystem.BL.Contract
         Task<bool> InsertUser(UserSchema model, HttpContext context);
         Task<bool> InsertRole(RoleSchema model, string user);
         Task<bool> InsertEmployee(EmployeeSchema model, HttpContext context);
-        
+        Task<bool> InsertClient(ClientSchema model, HttpContext context);
+
     }
 }

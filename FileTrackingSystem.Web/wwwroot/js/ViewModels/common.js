@@ -6,6 +6,10 @@ var addAdminUrl = "/InsertData/AddAdmin";
 var editAdminUrl = "/EditData/EditAdmin";
 var addRoleUrl = "/InsertData/AddRole";
 var editRoleUrl = "/EditData/EditRole";
+var addEmployeeUrl = "/InsertData/AddEmployee";
+var editEmployeeUrl = "/EditData/EditEmployee";
+var addClientUrl = "/InsertData/AddClient";
+var editClientUrl = "/EditData/EditClient";
 
 
 
@@ -65,6 +69,22 @@ function DoAction(action, data) {
     }
     else if (action === "EditRole") {
         JsonPOST(editRoleUrl, data);
+        LoadData();
+    }
+    if (action === "AddEmployee") {
+        JsonPOST(addEmployeeUrl, data);
+        LoadData();
+    }
+    else if (action === "EditEmployee") {
+        JsonPOST(editEmployeeUrl, data);
+        LoadData();
+    }
+    if (action === "AddClient") {
+        JsonPOST(addClientUrl, data);
+        LoadData();
+    }
+    else if (action === "EditClient") {
+        JsonPOST(editClientUrl, data);
         LoadData();
     }
   

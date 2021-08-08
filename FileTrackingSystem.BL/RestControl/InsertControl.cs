@@ -18,6 +18,7 @@ namespace FileTrackingSystem.BL.RestControl
     public class InsertControl : IInsert
     {
         private readonly IGenericDbService<Company> _company;
+        private readonly IGenericDbService<Client> _client;
         private readonly IGenericDbService<Branch> _branch;
         private readonly IGenericDbService<Log> _log;
         private readonly UserManager<ApplicationUser> _user;
@@ -25,7 +26,8 @@ namespace FileTrackingSystem.BL.RestControl
         private readonly ILogger<InsertControl> _logger;
         private readonly IIdentityUserService _service;
         public InsertControl(IGenericDbService<Company> company, UserManager<ApplicationUser> user, ILogger<InsertControl> logger,
-            IGenericDbService<Log> log, IGenericDbService<Branch> branch, RoleManager<ApplicationRole> role, IIdentityUserService service)
+            IGenericDbService<Log> log, IGenericDbService<Branch> branch, RoleManager<ApplicationRole> role, IIdentityUserService service,
+            IGenericDbService<Client> client)
         {
             _user = user;
             _company = company;
@@ -34,6 +36,7 @@ namespace FileTrackingSystem.BL.RestControl
             _log = log;
             _role = role;
             _service = service;
+            _client = client;
         }
 
         public async Task<bool> InsertBranch(BranchSchema model, string user)
@@ -47,6 +50,25 @@ namespace FileTrackingSystem.BL.RestControl
                 _branch.Create(model.toBranch());
                 _log.Create(MapperAction.CreateLog("Insert Branch", $"Branch {model.Name} is Added successfully to Company {cmp.Name} by {user}", user, LogType.Event));
                 _logger.LogInformation("Branch Data Addition Done ....");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+                return false;
+            }
+        }
+
+        public async Task<bool> InsertClient(ClientSchema model, HttpContext context)
+        {
+            try
+            {
+                _logger.LogInformation("Client Data Addition Starts ....");
+                _logger.LogInformation(Newtonsoft.Json.JsonConvert.SerializeObject(model));
+                var usr = await _user.FindByNameAsync(context.User.Identity.Name);
+                _client.Create(model.toClient(usr.Id));
+                _log.Create(MapperAction.CreateLog("Insert Clinet", $"Client {model.name} is Added successfully by {usr.UserName}", usr.UserName, LogType.Event));
+                _logger.LogInformation("Client Data Addition Done ....");
                 return true;
             }
             catch (Exception ex)
@@ -81,7 +103,8 @@ namespace FileTrackingSystem.BL.RestControl
             {
                 _logger.LogInformation("Employee Data Addition Starts ....");
                 _logger.LogInformation(Newtonsoft.Json.JsonConvert.SerializeObject(model));
-                var brnch = _branch.AsQueryable().Where(x => x.Name == model.Name).FirstOrDefault();
+                var brnch = _branch.AsQueryable().Where(x => x.Name == model.branchId).FirstOrDefault();
+                model.branchId = brnch.Id.ToString();
                 var res = await _user.CreateAsync(model.toEmployee(brnch.Id), model.password);
 
                 if (res.Succeeded)
