@@ -10,6 +10,7 @@ namespace FileTrackingSystem.Models.Models
     public class DocumentRequired:CommonModel
     {
         public int jobTypeId { get; set; }
+        public int docId { get; set; }
         public string Name { get; set; }
     }
 }

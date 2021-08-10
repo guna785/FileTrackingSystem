@@ -18,6 +18,9 @@ namespace FileTrackingSystem.BL.RestControl
     public class InsertControl : IInsert
     {
         private readonly IGenericDbService<Company> _company;
+        private readonly IGenericDbService<JobType> _jbType;
+        private readonly IGenericDbService<DocumentRequired> _docReq;
+        private readonly IGenericDbService<Document> _doc;
         private readonly IGenericDbService<Client> _client;
         private readonly IGenericDbService<Branch> _branch;
         private readonly IGenericDbService<Log> _log;
@@ -27,16 +30,20 @@ namespace FileTrackingSystem.BL.RestControl
         private readonly IIdentityUserService _service;
         public InsertControl(IGenericDbService<Company> company, UserManager<ApplicationUser> user, ILogger<InsertControl> logger,
             IGenericDbService<Log> log, IGenericDbService<Branch> branch, RoleManager<ApplicationRole> role, IIdentityUserService service,
-            IGenericDbService<Client> client)
+            IGenericDbService<Client> client, IGenericDbService<JobType> jbType, IGenericDbService<DocumentRequired> docReq,
+            IGenericDbService<Document> doc)
         {
             _user = user;
             _company = company;
             _branch = branch;
             _logger = logger;
             _log = log;
+            _jbType = jbType;
             _role = role;
+            _doc = doc;
             _service = service;
             _client = client;
+            _docReq = docReq;
         }
 
         public async Task<bool> InsertBranch(BranchSchema model, string user)
@@ -97,7 +104,26 @@ namespace FileTrackingSystem.BL.RestControl
             }
         }
 
-        public async Task<bool> InsertEmployee(EmployeeSchema model,HttpContext context)
+        public async Task<bool> InsertDocument(DocumentSchema model, HttpContext context)
+        {
+            try
+            {
+                _logger.LogInformation("Document Data Addition Starts ....");
+                _logger.LogInformation(Newtonsoft.Json.JsonConvert.SerializeObject(model));
+                _doc.Create(model.toDocument());
+
+                _logger.LogInformation("Document Data Addition Done ....");
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+                return false;
+            }
+        }
+
+        public async Task<bool> InsertEmployee(EmployeeSchema model, HttpContext context)
         {
             try
             {
@@ -112,9 +138,9 @@ namespace FileTrackingSystem.BL.RestControl
                     var rls = model.Roles.Split(',');
                     var usr = await _user.FindByNameAsync(model.userName);
                     foreach (var r in rls)
-                    {                        
+                    {
                         //var rol =await _role.FindByNameAsync(r);
-                       await  _user.AddToRoleAsync(usr, r);                       
+                        await _user.AddToRoleAsync(usr, r);
                     }
                     await _service.ConfirmEmailGenerate(usr, context);
                     _log.Create(MapperAction.CreateLog("Insert EMployee", $"Employee {model.userName} is Added successfully by {context.User.Identity.Name}", context.User.Identity.Name, LogType.Event));
@@ -124,6 +150,39 @@ namespace FileTrackingSystem.BL.RestControl
                 }
                 _logger.LogError("Error : " + Newtonsoft.Json.JsonConvert.SerializeObject(res.Errors.ToList()));
                 return false;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+                return false;
+            }
+        }
+
+        public async Task<bool> InsertJobType(JobTypeSchema model, HttpContext context)
+        {
+            try
+            {
+                _logger.LogInformation("Job Type Data Addition Starts ....");
+                _logger.LogInformation(Newtonsoft.Json.JsonConvert.SerializeObject(model));
+                var usr = await _user.FindByNameAsync(context.User.Identity.Name);
+                _jbType.Create(model.toJobType(usr.Id));
+                var docreq = Newtonsoft.Json.JsonConvert.DeserializeObject<List<string>>(model.documentRequired);
+                var jbtyp = _jbType.FindByCondition(x => x.Name == model.Name).FirstOrDefault();
+                foreach (var d in docreq)
+                {
+                    var dc = _doc.FindByCondition(x => x.Name == d).FirstOrDefault();
+
+                    _docReq.Create(new DocumentRequired()
+                    {
+                        Name = d,
+                        createdAt = DateTime.Now,
+                        docId = dc.Id,
+                        jobTypeId = jbtyp.Id
+                    });
+                }
+                _log.Create(MapperAction.CreateLog("Insert Job Type", $"Job Type {model.Name} is Added successfully by {usr.UserName}", usr.UserName, LogType.Event));
+                _logger.LogInformation("Job Type Data Addition Done ....");
+                return true;
             }
             catch (Exception ex)
             {
@@ -154,7 +213,7 @@ namespace FileTrackingSystem.BL.RestControl
             }
         }
 
-        public async Task<bool> InsertUser(UserSchema model,HttpContext context)
+        public async Task<bool> InsertUser(UserSchema model, HttpContext context)
         {
             try
             {

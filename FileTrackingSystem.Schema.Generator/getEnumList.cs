@@ -14,13 +14,16 @@ namespace FileTrackingSystem.Schema.Generator
     public class getEnumList
     {
         private readonly IGenericDbService<Company> _company;
+        private readonly IGenericDbService<Document> _doc;
         private readonly IGenericDbService<Branch> _branch;
         private readonly RoleManager<ApplicationRole> _role;
-        public getEnumList(IGenericDbService<Company> company, IGenericDbService<Branch> branch, RoleManager<ApplicationRole> role)
+        public getEnumList(IGenericDbService<Company> company, IGenericDbService<Branch> branch, RoleManager<ApplicationRole> role,
+            IGenericDbService<Document> doc)
         {
             _company = company;
             _branch = branch;
             _role = role;
+            _doc = doc;
         }
         public async Task<dynamic> getEnumRecords(string val, string zone = "")
         {
@@ -46,6 +49,10 @@ namespace FileTrackingSystem.Schema.Generator
             {
                 return _company.AsQueryable().Select(x => x.Name).ToList();
             }
+            else if (val.Equals("docReq"))
+            {
+                return _doc.AsQueryable().Select(x => x.Name).ToList();
+            }
             else if (val.Equals("branch"))
             {
                 return _branch.AsQueryable().Select(x => x.Name).ToList();
@@ -65,6 +72,10 @@ namespace FileTrackingSystem.Schema.Generator
             else if (val.Equals("idProoftype"))
             {
                 return Enum.GetNames(typeof(IdProofType));
+            }
+            else if (val.Equals("docType"))
+            {
+                return Enum.GetNames(typeof(DocType));
             }
             else if (val.Contains("month"))
             {

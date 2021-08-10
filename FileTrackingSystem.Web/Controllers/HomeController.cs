@@ -146,6 +146,19 @@ namespace FileTrackingSystem.Web.Controllers
                 schema = await _schema.Generate<ClientSchema>(HttpContext);
                 ViewBag.modalTitle = "EditClient";
             }
+            else if (ID.Contains("AddJobType"))
+            {
+                schema = await _schema.Generate<JobTypeSchema>(HttpContext);
+                ViewBag.modalTitle = "AddJobType";
+            }
+            else if (ID.Contains("EditJobType"))
+            {
+                var objId = ID.Split('-')[1];
+                var data = await _builder.ReturnObjectData<JobTypeSchema>(objId == null ? 0 : Convert.ToInt32(objId));
+                ViewBag.val = Newtonsoft.Json.JsonConvert.SerializeObject(data);
+                schema = await _schema.Generate<JobTypeSchema>(HttpContext);
+                ViewBag.modalTitle = "EditJobType";
+            }
             ViewBag.schema = schema;
             return View();
         }

@@ -71,6 +71,27 @@ namespace FileTrackingSystem.BL.Extentions
                 permissions = role.Permission
             };
         }
+        public static JobType toJobType(this JobTypeSchema jbtype, int id)
+        {
+            return new JobType()
+            {
+                createdAt = DateTime.Now,
+                createdBy = id,
+                Name = jbtype.Name,
+                status = jbtype.status
+            };
+        }
+        public static Document toDocument(this DocumentSchema doc)
+        {
+            return new Document()
+            {
+                createdAt = DateTime.Now,
+                Name = doc.Name,
+                status = doc.status,
+                docType = doc.docType,
+                Remarks = "none"
+            };
+        }
         public static ApplicationUser toEmployee(this EmployeeSchema schema, int Id)
         {
             return new ApplicationUser()
@@ -104,7 +125,7 @@ namespace FileTrackingSystem.BL.Extentions
                 fatherName = schema.fatherName,
                 Gender = schema.Gender,
                 GSTNo = schema.GSTNo,
-                idProof = Convert.FromBase64String( schema.photo),
+                idProof = Convert.FromBase64String(schema.photo),
                 idProoftype = schema.idProoftype,
                 name = schema.name,
                 Pan = schema.Pan,

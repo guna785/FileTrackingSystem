@@ -17,20 +17,30 @@ namespace FileTrackingSystem.BL.RestControl
     public class EditControl : IEdit
     {
         private readonly IGenericDbService<Company> _company;
+        private readonly IGenericDbService<JobType> _jbType;
+        private readonly IGenericDbService<DocumentRequired> _docReq;
+        private readonly IGenericDbService<Document> _doc;
+        private readonly IGenericDbService<Client> _client;
         private readonly IGenericDbService<Branch> _branch;
         private readonly UserManager<ApplicationUser> _user;
         private readonly RoleManager<ApplicationRole> _role;
         private readonly ILogger<EditControl> _logger;
         private readonly IGenericDbService<Log> _log;
         public EditControl(IGenericDbService<Company> company, UserManager<ApplicationUser> user, ILogger<EditControl> logger,
-            IGenericDbService<Log> log, IGenericDbService<Branch> branch,RoleManager<ApplicationRole> role)
+            IGenericDbService<Log> log, IGenericDbService<Branch> branch, RoleManager<ApplicationRole> role,
+            IGenericDbService<JobType> jbType, IGenericDbService<Client> client, IGenericDbService<DocumentRequired> docReq,
+            IGenericDbService<Document> doc)
         {
             _user = user;
             _company = company;
+            _client = client;
+            _jbType = jbType;
             _logger = logger;
             _log = log;
             _branch = branch;
             _role = role;
+            _doc = doc;
+            _docReq = docReq;
         }
 
         public async Task<bool> EditBranch(BranchSchema model, string user)
@@ -107,12 +117,46 @@ namespace FileTrackingSystem.BL.RestControl
                     return false;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(ex.ToString());
                 return false;
             }
-           
+
+        }
+
+        public async Task<bool> EditDocument(DocumentSchema model, string user)
+        {
+            try
+            {
+                _logger.LogInformation("Document Data Edition Starts ....");
+                _logger.LogInformation(Newtonsoft.Json.JsonConvert.SerializeObject(model));
+                _logger.LogInformation("Document Data Addition Starts ....");
+                _logger.LogInformation($"Checks Document Name {model.Name} Exists ");
+                var dc = _doc.FindById(model.Id);
+                if (dc != null)
+                {
+                    dc.Name = model.Name;
+                    dc.status = model.status;
+                    dc.docType = model.docType;
+                    _doc.Update(dc);
+
+                    _log.Create(MapperAction.CreateLog("Edit Document", $"Document {model.Name} is Updated successfully by {user}", user, LogType.Event));
+                    _logger.LogInformation("Document Data Edition Done ....");
+                    return true;
+
+                }
+                else
+                {
+                    _logger.LogError($"Document {model.Name} not Exoists....");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+                return false;
+            }
         }
 
         public async Task<bool> EditEmployee(EmployeeSchema model, string user)
@@ -147,7 +191,7 @@ namespace FileTrackingSystem.BL.RestControl
                         await _user.AddToRoleAsync(usr, r);
                         //var rol =await _role.FindByNameAsync(r);
                     }
-                   
+
                     _log.Create(MapperAction.CreateLog("Edit Admin", $"Admin {model.Name} is Updated successfully by {user}", user, LogType.Event));
                     _logger.LogInformation("Admin Data Edition Done ....");
                     return true;
@@ -166,6 +210,56 @@ namespace FileTrackingSystem.BL.RestControl
 
         }
 
+        public async Task<bool> EditJobType(JobTypeSchema model, string user)
+        {
+            try
+            {
+                _logger.LogInformation("Job Type Data Edition Starts ....");
+                _logger.LogInformation(Newtonsoft.Json.JsonConvert.SerializeObject(model));
+                _logger.LogInformation("Job Type Data Addition Starts ....");
+                _logger.LogInformation($"Checks Job Type Id for {model.Name} Exists ");
+                var jbType = _jbType.FindById(model.Id);
+                if (jbType != null)
+                {
+                    jbType.Name = model.Name;
+                    jbType.Id = model.Id;
+                    jbType.Remarks = "none";
+                    jbType.status = model.status;
+
+                    _jbType.Update(jbType);
+                    foreach (var d in jbType.documentRequireds)
+                    {
+                        _docReq.Delete(d);
+                    }
+                    var docreq = Newtonsoft.Json.JsonConvert.DeserializeObject<List<string>>(model.documentRequired);
+                    foreach (var d in docreq)
+                    {
+                        var dc = _doc.FindByCondition(x => x.Name == d).FirstOrDefault();
+                        _docReq.Create(new DocumentRequired()
+                        {
+                            Name = d,
+                            createdAt = DateTime.Now,
+                            docId = dc.Id,
+                            jobTypeId = jbType.Id
+                        });
+                    }
+                    _log.Create(MapperAction.CreateLog("Edit Job Type", $"Job Type {model.Name} is Updated successfully by {user}", user, LogType.Event));
+                    _logger.LogInformation("Job Type Data Edition Done ....");
+                    return true;
+                }
+                else
+                {
+                    _logger.LogError($"Branch {model.Name} not Exoists....");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+                return false;
+            }
+        }
+
         public async Task<bool> EditRole(RoleSchema model, string user)
         {
             try
@@ -180,7 +274,7 @@ namespace FileTrackingSystem.BL.RestControl
                     rol.Name = model.Name;
                     rol.description = model.Discription;
 
-                   var res= await _role.UpdateAsync(rol);
+                    var res = await _role.UpdateAsync(rol);
                     if (res.Succeeded)
                     {
                         _log.Create(MapperAction.CreateLog("Edit Role", $"Role {model.Name} is Updated successfully by {user}", user, LogType.Event));
@@ -192,7 +286,7 @@ namespace FileTrackingSystem.BL.RestControl
                         _logger.LogError("Error : " + Newtonsoft.Json.JsonConvert.SerializeObject(res.Errors.ToList()));
                         return false;
                     }
-                   
+
                 }
                 else
                 {
@@ -228,9 +322,9 @@ namespace FileTrackingSystem.BL.RestControl
                     usr.CompanyId = brnch.CompanyId;
                     if (!string.IsNullOrEmpty(model.password))
                     {
-                        usr.PasswordHash= _user.PasswordHasher.HashPassword(usr, model.password);
+                        usr.PasswordHash = _user.PasswordHasher.HashPassword(usr, model.password);
                     }
-                    
+
                     await _user.UpdateAsync(usr);
                     _log.Create(MapperAction.CreateLog("Edit Admin", $"Admin {model.Name} is Updated successfully by {user}", user, LogType.Event));
                     _logger.LogInformation("Admin Data Edition Done ....");
