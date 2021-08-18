@@ -92,6 +92,22 @@ namespace FileTrackingSystem.BL.Extentions
                 Remarks = "none"
             };
         }
+        public static Job toJob(this JobSchema job, int id, string jobID)
+        {
+            return new Job()
+            {
+                ApplicationUserId = id,
+                branchId = Convert.ToInt32(job.branchId),
+                clientId = job.clientId,
+                clientType = job.clientType,
+                createdAt = DateTime.Now,
+                createdBy = id,
+                jobTypeId = job.jobTypeId,
+                JbId = jobID,
+
+
+            };
+        }
         public static ApplicationUser toEmployee(this EmployeeSchema schema, int Id)
         {
             return new ApplicationUser()
@@ -125,7 +141,7 @@ namespace FileTrackingSystem.BL.Extentions
                 fatherName = schema.fatherName,
                 Gender = schema.Gender,
                 GSTNo = schema.GSTNo,
-                idProof = Convert.FromBase64String(schema.photo),
+                idProofNo = schema.idProofNo,
                 idProoftype = schema.idProoftype,
                 name = schema.name,
                 Pan = schema.Pan,

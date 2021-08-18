@@ -19,6 +19,7 @@ namespace FileTrackingSystem.BL
             services.AddScoped(typeof(IGenericDatatableRenderar), typeof(GenericDatatableRenderar));
             services.AddScoped(typeof(IInsert), typeof(InsertControl));
             services.AddScoped(typeof(IEdit), typeof(EditControl));
+            services.AddScoped(typeof(IGet), typeof(GetControl));
             services.AddScoped(typeof(IIdentityUserService), typeof(IdentityUserService));
             services.AddScoped<EditBuilder>();
             return services;

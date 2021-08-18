@@ -1,5 +1,6 @@
 ﻿using FileTrackingSystem.BL.Contract;
 using FileTrackingSystem.BL.Extentions;
+using FileTrackingSystem.BL.Models;
 using FileTrackingSystem.BL.SchemaModel;
 using FileTrackingSystem.DAL.Contract;
 using FileTrackingSystem.Models.Enums;
@@ -24,6 +25,10 @@ namespace FileTrackingSystem.BL.RestControl
         private readonly IGenericDbService<Client> _client;
         private readonly IGenericDbService<Branch> _branch;
         private readonly IGenericDbService<Log> _log;
+        private readonly IGenericDbService<Job> _job;
+        private readonly IGenericDbService<Invoice> _invoice;
+        private readonly IGenericDbService<Payment> _payment;
+
         private readonly UserManager<ApplicationUser> _user;
         private readonly RoleManager<ApplicationRole> _role;
         private readonly ILogger<InsertControl> _logger;
@@ -31,7 +36,8 @@ namespace FileTrackingSystem.BL.RestControl
         public InsertControl(IGenericDbService<Company> company, UserManager<ApplicationUser> user, ILogger<InsertControl> logger,
             IGenericDbService<Log> log, IGenericDbService<Branch> branch, RoleManager<ApplicationRole> role, IIdentityUserService service,
             IGenericDbService<Client> client, IGenericDbService<JobType> jbType, IGenericDbService<DocumentRequired> docReq,
-            IGenericDbService<Document> doc)
+            IGenericDbService<Document> doc, IGenericDbService<Job> job, IGenericDbService<Invoice> invoice,
+            IGenericDbService<Payment> payment)
         {
             _user = user;
             _company = company;
@@ -44,6 +50,9 @@ namespace FileTrackingSystem.BL.RestControl
             _service = service;
             _client = client;
             _docReq = docReq;
+            _job = job;
+            _invoice = invoice;
+            _payment = payment;
         }
 
         public async Task<bool> InsertBranch(BranchSchema model, string user)
@@ -158,6 +167,72 @@ namespace FileTrackingSystem.BL.RestControl
             }
         }
 
+        public async Task<bool> InsertJob(JobPostViewModel model, HttpContext context)
+        {
+            try
+            {
+                _logger.LogInformation("Job  Data Addition Starts ....");
+                _logger.LogInformation(Newtonsoft.Json.JsonConvert.SerializeObject(model));
+                var usr = await _user.FindByNameAsync(context.User.Identity.Name);
+                var clientPan = model.client.Split(new string[] { "  -  " }, StringSplitOptions.RemoveEmptyEntries)[0];
+                var client = _client.AsQueryable().Where(x => x.Pan == clientPan).FirstOrDefault();
+                var brnch = _branch.AsQueryable().Where(x => x.Id == usr.branchId).FirstOrDefault();
+                var jobModel = new JobSchema()
+                {
+                    jobTypeId = model.jobtype,
+                    clientId = client.Id,
+                    clientType = client.clientType,
+                    branchId = usr.branchId.ToString(),
+                    status = JobStatus.New,
+                };
+                var jb = _job.AsQueryable().OrderByDescending(x => x.Id).FirstOrDefault();
+
+                _job.Create(jobModel.toJob(usr.Id,
+                            Helper.Util.GenerateJObId(jb != null ? jb.JbId : "")));
+                jb = _job.AsQueryable().OrderByDescending(x => x.Id).FirstOrDefault();
+                var inv = _invoice.AsQueryable().OrderByDescending(x => x.Id).FirstOrDefault();
+                _invoice.Create(new Invoice()
+                {
+                    companyId = brnch.CompanyId,
+                    invId = Helper.Util.GenerateJObId(inv != null ? inv.invId : ""),
+                    jobId = jb.Id,
+                    Amount = model.amount,
+                    clientId = client.Id,
+                    status = model.totalAmount <= model.advanceAdmount ? IncoiceStatus.Paid : model.advanceAdmount > 0 ? IncoiceStatus.PartiallyPaid : IncoiceStatus.Unpaid,
+                    PaidAmount = model.amount >= model.advanceAdmount ? model.advanceAdmount : model.amount,
+                    balanceAmount = model.amount >= model.advanceAdmount ? model.totalAmount - model.advanceAdmount : 0,
+                    Tax = model.tax,
+                    createdAt = DateTime.Now,
+                    TotalAmount = model.amount + ((model.tax * model.amount) / 100),
+                });
+                if (model.advanceAdmount > 0)
+                {
+                    inv = _invoice.AsQueryable().OrderByDescending(x => x.Id).FirstOrDefault();
+                    var pyt = _payment.AsQueryable().OrderByDescending(x => x.Id).FirstOrDefault();
+                    _payment.Create(new Payment()
+                    {
+                        Amount = model.advanceAdmount,
+                        ApplicationUserId = usr.Id,
+                        invoiceId = inv.Id,
+                        payId = Helper.Util.GenerateJObId(pyt != null ? pyt.payId : ""),
+                        createdAt = DateTime.Now,
+                        status = PaymentStatus.Paid,
+                        clientId = client.Id,
+                        companyId = brnch.CompanyId,
+                        jobId = jb.Id
+                    });
+                }
+
+                _log.Create(MapperAction.CreateLog("Insert Job ", $"Job  {jb.JbId} is Added successfully by {usr.UserName}", usr.UserName, LogType.Event));
+                _logger.LogInformation("Job  Data Addition Done ....");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         public async Task<bool> InsertJobType(JobTypeSchema model, HttpContext context)
         {
             try
@@ -168,7 +243,7 @@ namespace FileTrackingSystem.BL.RestControl
                 _jbType.Create(model.toJobType(usr.Id));
                 var docreq = Newtonsoft.Json.JsonConvert.DeserializeObject<List<string>>(model.documentRequired);
                 var jbtyp = _jbType.FindByCondition(x => x.Name == model.Name).FirstOrDefault();
-                foreach (var d in docreq)
+                foreach (string d in docreq)
                 {
                     var dc = _doc.FindByCondition(x => x.Name == d).FirstOrDefault();
 

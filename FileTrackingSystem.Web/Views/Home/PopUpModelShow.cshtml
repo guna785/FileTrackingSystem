@@ -55,7 +55,12 @@
             } else {
                 try {
                     if (document.body.contains(document.querySelector(".selectMultiple"))) {
-                        values['Permission'] = JSON.stringify($(".selectMultiple").val());
+                        if (title === "AddJobType" || title ==="EditJobType") {
+                            values['documentRequired'] = JSON.stringify($(".selectMultiple").val());
+                        }
+                        else if (title === "AddRole" || title ==="EditRole") {
+                            values['Permission'] = JSON.stringify($(".selectMultiple").val());
+                        }                        
                     }
                    // values['__RequestVerificationToken'] = $("[name='__RequestVerificationToken']").val();
                     if (document.body.contains(document.querySelector('input[type="file"]'))) {
@@ -91,7 +96,10 @@
         if (document.body.contains(document.querySelector(".selectMultiple"))) {
             if (val.Permission) {
                 $(".selectMultiple").val(val.Permission);
-            }            
+            }
+            if (val.documentRequired) {
+                $(".selectMultiple").val(val.documentRequired);
+            }
         }
         if (document.body.contains(document.querySelector(".accept-image"))) {
             $(".accept-image").attr('accept', 'image/* ');

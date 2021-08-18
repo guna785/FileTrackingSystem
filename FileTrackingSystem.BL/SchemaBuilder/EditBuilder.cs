@@ -13,19 +13,27 @@ namespace FileTrackingSystem.BL.SchemaBuilder
     public class EditBuilder
     {
         private readonly IGenericDbService<Client> _client;
+        private readonly IGenericDbService<Document> _doc;
+        private readonly IGenericDbService<DocumentRequired> _docReq;
+        private readonly IGenericDbService<JobType> _jbType;
         private readonly IGenericDbService<Company> _company;
         private readonly IGenericDbService<Branch> _branch;
         private readonly UserManager<ApplicationUser> _user;
         private readonly RoleManager<ApplicationRole> _role;
         public EditBuilder(IGenericDbService<Company> company,
             UserManager<ApplicationUser> user, IGenericDbService<Branch> branch,
-            RoleManager<ApplicationRole> role, IGenericDbService<Client> client)
+            RoleManager<ApplicationRole> role, IGenericDbService<Client> client,
+            IGenericDbService<Document> doc, IGenericDbService<JobType> jbType,
+            IGenericDbService<DocumentRequired> docReq)
         {
             _branch = branch;
             _company = company;
             _user = user;
             _role = role;
             _client = client;
+            _doc = doc;
+            _jbType = jbType;
+            _docReq = docReq;
         }
         public async Task<T> ReturnObjectData<T>(int id)
         {
@@ -84,6 +92,28 @@ namespace FileTrackingSystem.BL.SchemaBuilder
                     Discription = obdata.description,
                     Name = obdata.Name,
                     Permission = Newtonsoft.Json.JsonConvert.DeserializeObject<List<string>>(obdata.permissions)
+                }, typeof(T));
+            }
+            else if (obj.Equals("DocumentSchema"))
+            {
+                var obdata = _doc.AsQueryable().Where(x => x.Id == id).FirstOrDefault();
+                return (T)Convert.ChangeType(new DocumentSchema()
+                {
+                    Id = obdata.Id,
+                    Name = obdata.Name,
+                    docType = obdata.docType,
+                    status = obdata.status
+                }, typeof(T));
+            }
+            else if (obj.Equals("JobTypeSchema"))
+            {
+                var obdata = _jbType.AsQueryable().Where(x => x.Id == id).FirstOrDefault();
+                return (T)Convert.ChangeType(new JobTypeSchema()
+                {
+                    Id = obdata.Id,
+                    Name = obdata.Name,
+                    status = obdata.status,
+                    documentRequired = _docReq.AsQueryable().Where(x=>x.jobTypeId==obdata.Id).Select(x=>x.Name).ToList()
                 }, typeof(T));
             }
             else if (obj.Equals("EmployeeSchema"))

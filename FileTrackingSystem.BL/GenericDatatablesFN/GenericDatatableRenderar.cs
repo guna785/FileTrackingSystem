@@ -2,6 +2,7 @@
 using FileTrackingSystem.BL.DataTableModel;
 using FileTrackingSystem.BL.DataTableViewModel;
 using FileTrackingSystem.BL.Extentions;
+using FileTrackingSystem.BL.Models;
 using FileTrackingSystem.DAL.Contract;
 using FileTrackingSystem.Models.Enums;
 using FileTrackingSystem.Models.Models;
@@ -105,7 +106,7 @@ namespace FileTrackingSystem.BL.GenericDatatablesFN
                 orderCriteria = "createdAt";
                 orderAscendingDirection = false;
             }
-             
+
             var branch = _branch.AsQueryable();
             var company = _company.AsQueryable();
             var result = _user.Users.Where(x => x.userType == UserType.Admin);
@@ -328,7 +329,7 @@ namespace FileTrackingSystem.BL.GenericDatatablesFN
             };
         }
 
-        public dynamic JobJson(DtParameters parameters)
+        public dynamic JobJson(DtParameters parameters, string catagory)
         {
             var searchBy = parameters.Search?.Value;
             var orderCriteria = string.Empty;
@@ -346,7 +347,9 @@ namespace FileTrackingSystem.BL.GenericDatatablesFN
                 orderCriteria = "createdAt";
                 orderAscendingDirection = false;
             }
-            var result = _job.AsQueryable();
+            var result =string.IsNullOrWhiteSpace(catagory)? _job.AsQueryable():catagory=="CompletedJobs"?_job.AsQueryable().Where(x=>x.status==JobStatus.JobCompleted) 
+                            :catagory=="PendingJobs"?_job.AsQueryable().Where(x=>x.status!=JobStatus.JobCompleted)
+                            :_job.AsQueryable().Where(x=>x.status==JobStatus.Cancelled);
             if (!string.IsNullOrEmpty(searchBy))
             {
                 result = result.Where(r => r.JbId != null && r.JbId.ToUpper().Contains(searchBy.ToUpper())
@@ -358,7 +361,9 @@ namespace FileTrackingSystem.BL.GenericDatatablesFN
 
             // now just get the count of items (without the skip and take) - eg how many could be returned with filtering
             var filteredResultsCount = result.Count();
-            var cntdb = _job.AsQueryable();
+            var cntdb = string.IsNullOrWhiteSpace(catagory) ? _job.AsQueryable() : catagory == "CompletedJobs" ? _job.AsQueryable().Where(x => x.status == JobStatus.JobCompleted)
+                            : catagory == "PendingJobs" ? _job.AsQueryable().Where(x => x.status != JobStatus.JobCompleted)
+                            : _job.AsQueryable().Where(x => x.status == JobStatus.Cancelled);
 
             var totalResultsCount = cntdb.Count();
 
@@ -484,7 +489,26 @@ namespace FileTrackingSystem.BL.GenericDatatablesFN
                 orderCriteria = "createdAt";
                 orderAscendingDirection = false;
             }
-            var result = _invoice.AsQueryable();
+            var result = (from i in _invoice.AsQueryable()
+                          join j in _job.AsQueryable() on i.jobId equals j.Id
+                          join c in _client.AsQueryable() on i.clientId equals c.Id
+                          join cmp in _company.AsQueryable() on i.companyId equals cmp.Id
+                          //where a.Status == "Pending"
+                          select new InvoiceModel()
+                          {
+                              Amount = i.Amount,
+                              balanceAmount = i.balanceAmount,
+                              Id = i.Id,
+                              clientId = c.Pan,
+                              companyId = i.companyId.ToString(),
+                              invId = i.invId,
+                              jobId = j.JbId,
+                              PaidAmount = i.PaidAmount,
+                              status = i.status,
+                              Tax = i.Tax,
+                              TotalAmount = i.TotalAmount,
+                              createdAt = i.createdAt
+                          });
             if (!string.IsNullOrEmpty(searchBy))
             {
                 result = result.Where(r => r.invId != null && r.invId.ToUpper().Contains(searchBy.ToUpper())
@@ -530,7 +554,25 @@ namespace FileTrackingSystem.BL.GenericDatatablesFN
                 orderCriteria = "createdAt";
                 orderAscendingDirection = false;
             }
-            var result = _payment.AsQueryable();
+            var result = (from p in _payment.AsQueryable()
+                          join i in _invoice.AsQueryable() on p.invoiceId equals i.Id
+                          join j in _job.AsQueryable() on p.jobId equals j.Id
+                          join c in _client.AsQueryable() on p.clientId equals c.Id
+                          join cmp in _company.AsQueryable() on p.companyId equals cmp.Id
+                          //where a.Status == "Pending"
+                          select new PaymentModel()
+                          {
+                              Amount = i.Amount,
+                              Id = i.Id,
+                              clientId = c.Pan,
+                              companyId = i.companyId.ToString(),
+                              invoiceId = i.invId,
+                              jobId = j.JbId,
+                              status = p.status,
+                              createdAt = i.createdAt,
+                               payId=p.payId,
+                              ApplicationUserId = p.ApplicationUserId
+                          }); ;
             if (!string.IsNullOrEmpty(searchBy))
             {
                 result = result.Where(r => r.payId != null && r.payId.ToUpper().Contains(searchBy.ToUpper())
@@ -613,5 +655,7 @@ namespace FileTrackingSystem.BL.GenericDatatablesFN
                     .ToList()
             };
         }
+
+
     }
 }

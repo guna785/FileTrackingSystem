@@ -15,7 +15,7 @@ namespace FileTrackingSystem.BL.Contract
         dynamic EmployeeJson(DtParameters parameters);
         dynamic RoleJson(DtParameters parameters);
         dynamic ClientJson(DtParameters parameters);
-        dynamic JobJson(DtParameters parameters);
+        dynamic JobJson(DtParameters parameters,string catagory);
         dynamic JobTypeJson(DtParameters parameters);
         dynamic DocumentJson(DtParameters parameters);
         dynamic InvoiceJson(DtParameters parameters);

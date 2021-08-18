@@ -8,9 +8,11 @@ namespace FileTrackingSystem.Models.Enums
 {
     public enum JobStatus
     {
+        New,
         DocumentPending,
         DocumentCollected,
         JobCompletedBillPending,
-        JobCompleted
+        JobCompleted,
+        Cancelled
     }
 }

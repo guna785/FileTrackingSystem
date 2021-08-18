@@ -17,7 +17,7 @@ namespace FileTrackingSystem.Models.Models
         public Gender Gender { get; set; }
         public ClientType clientType { get; set; }
         public string Address { get; set; }
-        public byte[] idProof { get; set; }
+        public string idProofNo { get; set; }
         public IdProofType idProoftype { get; set; }
         public int createdBy { get; set; }
         public DateTime Dob { get; set; }

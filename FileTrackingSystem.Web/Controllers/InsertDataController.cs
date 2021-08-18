@@ -1,4 +1,5 @@
 ﻿using FileTrackingSystem.BL.Contract;
+using FileTrackingSystem.BL.Models;
 using FileTrackingSystem.BL.SchemaModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -121,5 +122,58 @@ namespace FileTrackingSystem.Web.Controllers
             }
             return BadRequest("Invalid Request");
         }
+        [HttpPost]
+        public async Task<IActionResult> AddDocument([FromBody] DocumentSchema schema)
+        {
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("Model state is Invalid");
+                return BadRequest("Invalid Request");
+            }
+            var res = await _insert.InsertDocument(schema, HttpContext);
+            if (res)
+            {
+                _logger.LogInformation("Resquest Completed Successfully");
+                var result = new { status = $"New Document {schema.Name} is Sucessfully Added" };
+                return Ok(result);
+            }
+            return BadRequest("Invalid Request");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddJobType([FromBody] JobTypeSchema schema)
+        {
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("Model state is Invalid");
+                return BadRequest("Invalid Request");
+            }
+            var res = await _insert.InsertJobType(schema, HttpContext);
+            if (res)
+            {
+                _logger.LogInformation("Resquest Completed Successfully");
+                var result = new { status = $"New Job Type {schema.Name} is Sucessfully Added" };
+                return Ok(result);
+            }
+            return BadRequest("Invalid Request");
+        }
+        [HttpPost]
+        public async Task<IActionResult> AddJob([FromBody] JobPostViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("Model state is Invalid");
+                return BadRequest("Invalid Request");
+            }
+            var res = await _insert.InsertJob(model, HttpContext);
+            if (res)
+            {
+                _logger.LogInformation("Resquest Completed Successfully");
+                var result = new { status = $"New Job  is Sucessfully Added" };
+                return Ok(result);
+            }
+            return BadRequest("Invalid Request");
+        }
+
     }
 }

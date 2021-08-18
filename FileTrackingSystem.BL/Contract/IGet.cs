@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FileTrackingSystem.Models.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,7 @@ namespace FileTrackingSystem.BL.Contract
 {
     public interface IGet
     {
+        public IQueryable<Client> GetAllClients();
+        public IQueryable<JobType> GetJobTypes();
     }
 }

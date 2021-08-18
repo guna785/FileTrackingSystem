@@ -227,12 +227,13 @@ namespace FileTrackingSystem.BL.RestControl
                     jbType.status = model.status;
 
                     _jbType.Update(jbType);
-                    foreach (var d in jbType.documentRequireds)
+                    var docReq = _docReq.AsQueryable().Where(x => x.jobTypeId == jbType.Id);
+                    foreach (var d in docReq)
                     {
                         _docReq.Delete(d);
                     }
                     var docreq = Newtonsoft.Json.JsonConvert.DeserializeObject<List<string>>(model.documentRequired);
-                    foreach (var d in docreq)
+                    foreach (string d in docreq)
                     {
                         var dc = _doc.FindByCondition(x => x.Name == d).FirstOrDefault();
                         _docReq.Create(new DocumentRequired()

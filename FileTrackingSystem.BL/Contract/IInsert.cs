@@ -1,4 +1,5 @@
-﻿using FileTrackingSystem.BL.SchemaModel;
+﻿using FileTrackingSystem.BL.Models;
+using FileTrackingSystem.BL.SchemaModel;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,7 @@ namespace FileTrackingSystem.BL.Contract
         Task<bool> InsertClient(ClientSchema model, HttpContext context);
         Task<bool> InsertJobType(JobTypeSchema model, HttpContext context);
         Task<bool> InsertDocument(DocumentSchema model, HttpContext context);
+        Task<bool> InsertJob(JobPostViewModel model, HttpContext context);
 
     }
 }

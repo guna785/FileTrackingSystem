@@ -120,5 +120,39 @@ namespace FileTrackingSystem.Web.Controllers
             }
             return BadRequest("Invalid Request");
         }
+        [HttpPost]
+        public async Task<IActionResult> EditDocument([FromBody] DocumentSchema schema)
+        {
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("Model state is Invalid");
+                return BadRequest("Invalid Request");
+            }
+            var res = await _edit.EditDocument(schema, HttpContext.User.Identity.Name);
+            if (res)
+            {
+                _logger.LogInformation("Resquest Completed Successfully");
+                var result = new { status = $" Document {schema.Name} is Sucessfully Edited" };
+                return Ok(result);
+            }
+            return BadRequest("Invalid Request");
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditJobType([FromBody] JobTypeSchema schema)
+        {
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("Model state is Invalid");
+                return BadRequest("Invalid Request");
+            }
+            var res = await _edit.EditJobType(schema, HttpContext.User.Identity.Name);
+            if (res)
+            {
+                _logger.LogInformation("Resquest Completed Successfully");
+                var result = new { status = $" Job Type {schema.Name} is Sucessfully Edited" };
+                return Ok(result);
+            }
+            return BadRequest("Invalid Request");
+        }
     }
 }

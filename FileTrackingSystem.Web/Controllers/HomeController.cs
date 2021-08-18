@@ -1,4 +1,6 @@
-﻿using FileTrackingSystem.BL.SchemaBuilder;
+﻿using FileTrackingSystem.BL.Contract;
+using FileTrackingSystem.BL.Models;
+using FileTrackingSystem.BL.SchemaBuilder;
 using FileTrackingSystem.BL.SchemaModel;
 using FileTrackingSystem.Schema.Generator;
 using FileTrackingSystem.Web.Models;
@@ -10,6 +12,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Wkhtmltopdf.NetCore;
 
 namespace FileTrackingSystem.Web.Controllers
 {
@@ -19,11 +22,18 @@ namespace FileTrackingSystem.Web.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly SchemaGenerator _schema;
         private readonly EditBuilder _builder;
-        public HomeController(ILogger<HomeController> logger, EditBuilder builder, SchemaGenerator schema)
+        private readonly IGet _get;
+        private readonly IInsert _insert;
+        private readonly IGeneratePdf _generatePdf;
+        public HomeController(ILogger<HomeController> logger, EditBuilder builder, SchemaGenerator schema, IGet get,
+             IInsert insert, IGeneratePdf generatePdf)
         {
             _logger = logger;
             _builder = builder;
             _schema = schema;
+            _get = get;
+            _insert = insert;
+            _generatePdf = generatePdf;
         }
         public IActionResult Index()
         {
@@ -63,6 +73,55 @@ namespace FileTrackingSystem.Web.Controllers
         public IActionResult Document()
         {
             return View();
+        }
+        public IActionResult Job()
+        {
+            return View();
+        }
+        //[HttpPost]
+        //public async Task<IActionResult> Job(JobPostViewModel model)
+        //{
+        //    var res = await _insert.InsertJob(model, HttpContext);
+        //    return View();
+        //}
+        public IActionResult CompletedJob()
+        {
+            return View();
+        }
+        public IActionResult PendingJob()
+        {
+            return View();
+        }
+        public IActionResult CancelledJob()
+        {
+            return View();
+        }
+        public IActionResult Invoice()
+        {
+            return View();
+        }
+        public IActionResult Payment()
+        {
+            return View();
+        }
+        public IActionResult EventLog()
+        {
+            return View();
+        }
+        public IActionResult JobLog()
+        {
+            return View();
+        }
+        public IActionResult CreateNeJob()
+        {
+            ViewBag.jobtype = _get.GetJobTypes();
+            return View();
+        }
+        [HttpPost]
+        public IActionResult GetClients([FromBody]string Id)
+        {
+            var client = _get.GetAllClients().Where(x => x.Pan.ToUpper().Contains(Id.ToUpper()) || x.name.ToUpper().Contains(Id.ToUpper())).Select(x=> string.Concat( x.Pan , "  -  " , x.name) ).ToList();
+            return Ok(client);
         }
         private string schema="";
         public async Task<IActionResult> PopUpModelShow(string ID)
@@ -158,6 +217,19 @@ namespace FileTrackingSystem.Web.Controllers
                 ViewBag.val = Newtonsoft.Json.JsonConvert.SerializeObject(data);
                 schema = await _schema.Generate<JobTypeSchema>(HttpContext);
                 ViewBag.modalTitle = "EditJobType";
+            }
+            else if (ID.Contains("AddDocument"))
+            {
+                schema = await _schema.Generate<DocumentSchema>(HttpContext);
+                ViewBag.modalTitle = "AddDocument";
+            }
+            else if (ID.Contains("EditDocument"))
+            {
+                var objId = ID.Split('-')[1];
+                var data = await _builder.ReturnObjectData<DocumentSchema>(objId == null ? 0 : Convert.ToInt32(objId));
+                ViewBag.val = Newtonsoft.Json.JsonConvert.SerializeObject(data);
+                schema = await _schema.Generate<DocumentSchema>(HttpContext);
+                ViewBag.modalTitle = "EditDocument";
             }
             ViewBag.schema = schema;
             return View();

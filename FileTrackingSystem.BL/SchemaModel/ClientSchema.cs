@@ -22,14 +22,15 @@ namespace FileTrackingSystem.BL.SchemaModel
         public string Phone { get; set; }
         [GSchema("Gender", "Gender", "string", true, getEnumVal = "gender", getHtmlClass = "col-md-6")]
         public Gender Gender { get; set; }
-        [GSchema("clientType", "CLient Type", "string", true, getEnumVal = "clientType", getHtmlClass = "col-md-6")]
+        [GSchema("clientType", "Client Type", "string", true, getEnumVal = "clientType", getHtmlClass = "col-md-6")]
         public ClientType clientType { get; set; }
         [GSchema("Address", "Address", "string", true, getHtmlClass = "col-md-6")]
         public string Address { get; set; }
-        [GSchema("photo", "Id Proof", "file", true, getHtmlClass = "col-md-6" ,getfieldHtmlClass = "accept-image")]
-        public string photo { get; set; }
-        [GSchema("idProoftype", "Proof Type", "string", true,getEnumVal = "idProoftype", getHtmlClass = "col-md-6")]
+        [GSchema("idProoftype", "Proof Type", "string", true, getEnumVal = "idProoftype", getHtmlClass = "col-md-6")]
         public IdProofType idProoftype { get; set; }
+        [GSchema("idProofNo", "Id Proof No", "string", true, getHtmlClass = "col-md-6" ,getfieldHtmlClass = "accept-image")]
+        public string  idProofNo { get; set; }
+       
         [GSchema("Dob", "Date of Birth", "date", true, getHtmlClass = "col-md-6")]
         public DateTime Dob { get; set; }
         [GSchema("Remarks", "Remarks", "string", true, getHtmlClass = "col-md-6")]

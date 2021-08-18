@@ -10,7 +10,11 @@ var addEmployeeUrl = "/InsertData/AddEmployee";
 var editEmployeeUrl = "/EditData/EditEmployee";
 var addClientUrl = "/InsertData/AddClient";
 var editClientUrl = "/EditData/EditClient";
-
+var addDocumetUrl = "/InsertData/AddDocument";
+var editDocumentUrl = "/EditData/EditDocument";
+var addJobTypeUrl = "/InsertData/AddJobType";
+var editJobTypeUrl = "/EditData/EditJobType";
+var createJobUrl = "/InsertData/AddJob";
 
 
 function JsonPOST(url, data) {
@@ -85,6 +89,26 @@ function DoAction(action, data) {
     }
     else if (action === "EditClient") {
         JsonPOST(editClientUrl, data);
+        LoadData();
+    }
+    if (action === "AddDocument") {
+        JsonPOST(addDocumetUrl, data);
+        LoadData();
+    }
+    else if (action === "EditDocument") {
+        JsonPOST(editDocumentUrl, data);
+        LoadData();
+    }
+    if (action === "AddJobType") {
+        JsonPOST(addJobTypeUrl, data);
+        LoadData();
+    }
+    else if (action === "EditJobType") {
+        JsonPOST(editJobTypeUrl, data);
+        LoadData();
+    }
+    else if (action === "CreateJob") {
+        JsonPOST(createJobUrl, data);
         LoadData();
     }
   

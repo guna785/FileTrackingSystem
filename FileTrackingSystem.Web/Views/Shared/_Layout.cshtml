@@ -188,17 +188,17 @@
                                 <li>
                                     <a><i class="fa fa-table"></i> Jobs <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
-                                        <li><a href="tables.html">Jobs</a></li>
-                                        <li><a href="tables_dynamic.html">Completed Jobs</a></li>
-                                        <li><a href="tables_dynamic.html">Pending Jobs</a></li>
-                                        <li><a href="tables_dynamic.html">Cancelled Jobs</a></li>
+                                        <li><a asp-action="Job" asp-controller="Home">Jobs</a></li>
+                                        <li><a asp-action="CompletedJob" asp-controller="Home">Completed Jobs</a></li>
+                                        <li><a asp-action="PendingJob" asp-controller="Home">Pending Jobs</a></li>
+                                        <li><a asp-action="CancelledJob" asp-controller="Home">Cancelled Jobs</a></li>
                                     </ul>
                                 </li>
                                 <li>
                                     <a><i class="fa fa-bar-chart-o"></i> Billing <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
-                                        <li><a href="chartjs.html">Invoice</a></li>
-                                        <li><a href="chartjs2.html">Payment</a></li>
+                                        <li><a asp-action="Invoice" asp-controller="Home">Invoice</a></li>
+                                        <li><a asp-action="Payment" asp-controller="Home">Payment</a></li>
                                     </ul>
                                 </li>
                                 <li>
@@ -217,8 +217,8 @@
                                 <li>
                                     <a><i class="fa fa-clone"></i>Logs <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
-                                        <li><a href="fixed_sidebar.html">Event Logs</a></li>
-                                        <li><a href="fixed_footer.html">Job Logs</a></li>
+                                        <li><a asp-action="EventLog" asp-controller="Home">Event Logs</a></li>
+                                        <li><a asp-action="JobLog" asp-controller="Home">Job Logs</a></li>
                                     </ul>
                                 </li>
                             </ul>

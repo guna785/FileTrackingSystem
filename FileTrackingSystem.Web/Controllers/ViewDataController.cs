@@ -50,6 +50,26 @@ namespace FileTrackingSystem.Web.Controllers
         {
             return Ok(_renderar.JobTypeJson(parameters));
         }
+        [HttpPost]
+        public IActionResult LoadDocument([FromBody] DtParameters parameters)
+        {
+            return Ok(_renderar.DocumentJson(parameters));
+        }
+        [HttpPost]
+        public IActionResult Loadjobs([FromBody] DtParameters parameters,string Id)
+        {
+            return Ok(_renderar.JobJson(parameters,Id));
+        }
+        [HttpPost]
+        public IActionResult LoadInvoice([FromBody] DtParameters parameters, string catagory)
+        {
+            return Ok(_renderar.InvoiceJson(parameters));
+        }
+        [HttpPost]
+        public IActionResult LoadPayments([FromBody] DtParameters parameters, string catagory)
+        {
+            return Ok(_renderar.PaymentJson(parameters));
+        }
 
     }
 }
