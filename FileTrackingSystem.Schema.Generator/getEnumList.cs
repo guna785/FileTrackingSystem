@@ -17,18 +17,18 @@ namespace FileTrackingSystem.Schema.Generator
         private readonly IGenericDbService<Document> _doc;
         private readonly IGenericDbService<Branch> _branch;
         private readonly RoleManager<ApplicationRole> _role;
+        private readonly UserManager<ApplicationUser> _userManager;
         public getEnumList(IGenericDbService<Company> company, IGenericDbService<Branch> branch, RoleManager<ApplicationRole> role,
-            IGenericDbService<Document> doc)
+            IGenericDbService<Document> doc, UserManager<ApplicationUser> userManager)
         {
             _company = company;
             _branch = branch;
             _role = role;
             _doc = doc;
+            _userManager = userManager;
         }
         public async Task<dynamic> getEnumRecords(string val, string zone = "")
         {
-
-
             if (val.Equals("status"))
             {
                 return Enum.GetNames(typeof(StatusType));
@@ -44,6 +44,10 @@ namespace FileTrackingSystem.Schema.Generator
             else if (val.Equals("usertype-User"))
             {
                 return Enum.GetNames(typeof(UserType)).Where(x => x.Equals("User")).ToList();
+            }
+            else if (val.Equals("employee"))
+            {
+                return _userManager.Users.Where(x => x.userType == UserType.User).Select(x => x.UserName).ToList();
             }
             else if (val.Equals("company"))
             {

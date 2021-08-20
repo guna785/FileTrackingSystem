@@ -16,6 +16,7 @@ namespace FileTrackingSystem.BL.SchemaBuilder
         private readonly IGenericDbService<Document> _doc;
         private readonly IGenericDbService<DocumentRequired> _docReq;
         private readonly IGenericDbService<JobType> _jbType;
+        private readonly IGenericDbService<Job> _job;
         private readonly IGenericDbService<Company> _company;
         private readonly IGenericDbService<Branch> _branch;
         private readonly UserManager<ApplicationUser> _user;
@@ -24,9 +25,10 @@ namespace FileTrackingSystem.BL.SchemaBuilder
             UserManager<ApplicationUser> user, IGenericDbService<Branch> branch,
             RoleManager<ApplicationRole> role, IGenericDbService<Client> client,
             IGenericDbService<Document> doc, IGenericDbService<JobType> jbType,
-            IGenericDbService<DocumentRequired> docReq)
+            IGenericDbService<DocumentRequired> docReq, IGenericDbService<Job> job)
         {
             _branch = branch;
+            _job = job;
             _company = company;
             _user = user;
             _role = role;
@@ -113,7 +115,18 @@ namespace FileTrackingSystem.BL.SchemaBuilder
                     Id = obdata.Id,
                     Name = obdata.Name,
                     status = obdata.status,
-                    documentRequired = _docReq.AsQueryable().Where(x=>x.jobTypeId==obdata.Id).Select(x=>x.Name).ToList()
+                    documentRequired = _docReq.AsQueryable().Where(x => x.jobTypeId == obdata.Id).Select(x => x.Name).ToList()
+                }, typeof(T));
+            }
+            else if (obj.Equals("ChangeJobStatusSchema"))
+            {
+                var obdata = _job.AsQueryable().Where(x => x.Id == id).FirstOrDefault();
+                return (T)Convert.ChangeType(new ChangeJobStatusSchema()
+                {
+                    Id = obdata.Id,
+                    comment = obdata.remarks,
+                    UserId = _user.Users.Where(x => x.Id == obdata.ApplicationUserId).FirstOrDefault().UserName,
+                    status = obdata.status,
                 }, typeof(T));
             }
             else if (obj.Equals("EmployeeSchema"))

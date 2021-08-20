@@ -20,6 +20,7 @@ namespace FileTrackingSystem.Models.Models
         public JobStatus status { get; set; }
         public DateTime CompletedTime { get; set; }
         public int createdBy { get; set; }
+        public string remarks { get; set; }
         public virtual IList<SubmittedDocument> SubmittedDocuments { get; set; }
         public virtual IList<PendingDocument> PendingDocuments { get; set; }
         public virtual Invoice invoice { get; set; }

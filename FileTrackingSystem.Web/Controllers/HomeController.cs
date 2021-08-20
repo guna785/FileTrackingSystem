@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Wkhtmltopdf.NetCore;
@@ -77,13 +78,7 @@ namespace FileTrackingSystem.Web.Controllers
         public IActionResult Job()
         {
             return View();
-        }
-        //[HttpPost]
-        //public async Task<IActionResult> Job(JobPostViewModel model)
-        //{
-        //    var res = await _insert.InsertJob(model, HttpContext);
-        //    return View();
-        //}
+        }       
         public IActionResult CompletedJob()
         {
             return View();
@@ -103,6 +98,18 @@ namespace FileTrackingSystem.Web.Controllers
         public IActionResult Payment()
         {
             return View();
+        }
+        public async Task<IActionResult> PrintInvoice(int Id)
+        {
+            var res = _get.GetInvoiceDocument(Id);
+            return await _generatePdf.GetPdf("Views/Home/InvoiceDocumentView.cshtml", res);
+        }
+        public async Task<IActionResult> DownloadInvoice(int Id)
+        {
+            var res = _get.GetInvoiceDocument(Id);
+            var pdf = await _generatePdf.GetByteArray("Views/Home/InvoiceDocumentView.cshtml", res);
+            var contentType = "APPLICATION/octet-stream";
+            return File(pdf, contentType, "Invoice.pdf");
         }
         public IActionResult EventLog()
         {
@@ -230,6 +237,14 @@ namespace FileTrackingSystem.Web.Controllers
                 ViewBag.val = Newtonsoft.Json.JsonConvert.SerializeObject(data);
                 schema = await _schema.Generate<DocumentSchema>(HttpContext);
                 ViewBag.modalTitle = "EditDocument";
+            }
+            else if (ID.Contains("ChangeJobStatus"))
+            {
+                var objId = ID.Split('-')[1];
+                var data = await _builder.ReturnObjectData<ChangeJobStatusSchema>(objId == null ? 0 : Convert.ToInt32(objId));
+                ViewBag.val = Newtonsoft.Json.JsonConvert.SerializeObject(data);
+                schema = await _schema.Generate<ChangeJobStatusSchema>(HttpContext);
+                ViewBag.modalTitle = "ChangeJobStatus";
             }
             ViewBag.schema = schema;
             return View();

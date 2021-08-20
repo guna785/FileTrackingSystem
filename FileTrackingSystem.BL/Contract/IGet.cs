@@ -1,4 +1,5 @@
-﻿using FileTrackingSystem.Models.Models;
+﻿using FileTrackingSystem.BL.Models;
+using FileTrackingSystem.Models.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,6 @@ namespace FileTrackingSystem.BL.Contract
     {
         public IQueryable<Client> GetAllClients();
         public IQueryable<JobType> GetJobTypes();
+        public InvoiceDocumentModel GetInvoiceDocument(int Id);
     }
 }
