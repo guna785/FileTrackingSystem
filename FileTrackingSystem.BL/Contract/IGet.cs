@@ -13,5 +13,6 @@ namespace FileTrackingSystem.BL.Contract
         public IQueryable<Client> GetAllClients();
         public IQueryable<JobType> GetJobTypes();
         public InvoiceDocumentModel GetInvoiceDocument(int Id);
+        public IQueryable<ApplicationUser> GetAllEmployees();
     }
 }

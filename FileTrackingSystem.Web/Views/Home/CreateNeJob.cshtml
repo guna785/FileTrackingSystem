@@ -84,6 +84,15 @@
                 </select>
             </div>
             <div class="form-group">
+                <label>Assigned To</label>
+                <select asp-for="assignedTo" id="assignedTo" class="form-control" style="width:80%;">
+                    @foreach (var item in ViewBag.assignedTo)
+                    {
+                        <option value="@item.Id">@item.Name</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
                 <label>Amount</label>
                 <input onchange="calculateTotalAmount();" asp-for="amount" id="amount" class="form-control" style="width:80%;" value="0" type="number" />
 

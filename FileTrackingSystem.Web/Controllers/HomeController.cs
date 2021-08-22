@@ -122,6 +122,7 @@ namespace FileTrackingSystem.Web.Controllers
         public IActionResult CreateNeJob()
         {
             ViewBag.jobtype = _get.GetJobTypes();
+            ViewBag.assignedTo = _get.GetAllEmployees();
             return View();
         }
         [HttpPost]

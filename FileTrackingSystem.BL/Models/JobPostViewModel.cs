@@ -13,5 +13,6 @@ namespace FileTrackingSystem.BL.Models
         public double tax { get; set; }
         public double totalAmount { get; set; }
         public int advanceAdmount { get; set; }
+        public string assignedTo { get; set; }
     }
 }

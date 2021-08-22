@@ -18,5 +18,6 @@ namespace FileTrackingSystem.Models.Models
         public int companyId { get; set; }
         public int ApplicationUserId { get; set; }
         public PaymentStatus status { get; set; }
+        public string remarks { get; set; }
     }
 }

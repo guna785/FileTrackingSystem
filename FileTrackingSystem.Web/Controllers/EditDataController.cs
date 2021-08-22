@@ -13,10 +13,12 @@ namespace FileTrackingSystem.Web.Controllers
     {
         private readonly IEdit _edit;
         private readonly ILogger<EditDataController> _logger;
-        public EditDataController(IEdit edit, ILogger<EditDataController> logger)
+        private readonly IUrlHelper _helper;
+        public EditDataController(IEdit edit, ILogger<EditDataController> logger, IUrlHelper helper)
         {
             _edit = edit;
             _logger = logger;
+            _helper = helper;
         }
         [HttpPost]
         public async Task<IActionResult> EditCompany([FromBody] CompanySchema schema)
@@ -116,6 +118,23 @@ namespace FileTrackingSystem.Web.Controllers
             {
                 _logger.LogInformation("Resquest Completed Successfully");
                 var result = new { status = $" Client {schema.name} is Sucessfully Edited" };
+                return Ok(result);
+            }
+            return BadRequest("Invalid Request");
+        }
+        [HttpPost]
+        public async Task<IActionResult> JobStatusUpdate([FromBody] ChangeJobStatusSchema schema)
+        {
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("Model state is Invalid");
+                return BadRequest("Invalid Request");
+            }
+            var res = await _edit.ChangeJobStatus(schema, HttpContext.User.Identity.Name);
+            if (res)
+            {
+                _logger.LogInformation("Resquest Completed Successfully");
+                var result = new { status = $" Job status  is Sucessfully Changed" };
                 return Ok(result);
             }
             return BadRequest("Invalid Request");

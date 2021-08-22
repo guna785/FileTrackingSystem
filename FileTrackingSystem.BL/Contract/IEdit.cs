@@ -17,6 +17,7 @@ namespace FileTrackingSystem.BL.Contract
         Task<bool> EditClient(ClientSchema model, string user);
         Task<bool> EditJobType(JobTypeSchema model, string user);
         Task<bool> EditDocument(DocumentSchema model, string user);
+        Task<bool> ChangeJobStatus(ChangeJobStatusSchema model, string user);
 
     }
 }

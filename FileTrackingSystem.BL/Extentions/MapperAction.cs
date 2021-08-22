@@ -92,11 +92,11 @@ namespace FileTrackingSystem.BL.Extentions
                 Remarks = "none"
             };
         }
-        public static Job toJob(this JobSchema job, int id, string jobID)
+        public static Job toJob(this JobSchema job, int id,int assignedTo, string jobID)
         {
             return new Job()
             {
-                ApplicationUserId = id,
+                ApplicationUserId = assignedTo,
                 branchId = Convert.ToInt32(job.branchId),
                 clientId = job.clientId,
                 clientType = job.clientType,

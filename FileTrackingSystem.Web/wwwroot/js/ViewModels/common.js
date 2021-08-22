@@ -15,7 +15,7 @@ var editDocumentUrl = "/EditData/EditDocument";
 var addJobTypeUrl = "/InsertData/AddJobType";
 var editJobTypeUrl = "/EditData/EditJobType";
 var createJobUrl = "/InsertData/AddJob";
-
+var JobStatusUpdateUrl = "/EditData/JobStatusUpdate";
 
 function JsonPOST(url, data) {
     var token = $("#myToken").val();
@@ -109,6 +109,10 @@ function DoAction(action, data) {
     }
     else if (action === "CreateJob") {
         JsonPOST(createJobUrl, data);
+        LoadData();
+    }
+    else if (action === "ChangeJobStatus") {
+        JsonPOST(JobStatusUpdateUrl, data);
         LoadData();
     }
   

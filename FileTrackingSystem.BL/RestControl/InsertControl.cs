@@ -177,6 +177,7 @@ namespace FileTrackingSystem.BL.RestControl
                 var clientPan = model.client.Split(new string[] { "  -  " }, StringSplitOptions.RemoveEmptyEntries)[0];
                 var client = _client.AsQueryable().Where(x => x.Pan == clientPan).FirstOrDefault();
                 var brnch = _branch.AsQueryable().Where(x => x.Id == usr.branchId).FirstOrDefault();
+                var assignedto = await _user.FindByNameAsync(model.assignedTo);
                 var jobModel = new JobSchema()
                 {
                     jobTypeId = model.jobtype,
@@ -184,10 +185,11 @@ namespace FileTrackingSystem.BL.RestControl
                     clientType = client.clientType,
                     branchId = usr.branchId.ToString(),
                     status = JobStatus.New,
+                    
                 };
                 var jb = _job.AsQueryable().OrderByDescending(x => x.Id).FirstOrDefault();
 
-                _job.Create(jobModel.toJob(usr.Id,
+                _job.Create(jobModel.toJob(usr.Id,assignedto.Id,
                             Helper.Util.GenerateJObId(jb != null ? jb.JbId : "")));
                 jb = _job.AsQueryable().OrderByDescending(x => x.Id).FirstOrDefault();
                 var inv = _invoice.AsQueryable().OrderByDescending(x => x.Id).FirstOrDefault();

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FileTrackingSystem.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210817170623_InitialMigration")]
+    [Migration("20210821024747_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -243,6 +243,9 @@ namespace FileTrackingSystem.DAL.Migrations
                     b.Property<int>("jobId")
                         .HasColumnType("int");
 
+                    b.Property<string>("remarks")
+                        .HasColumnType("text");
+
                     b.Property<int>("status")
                         .HasColumnType("int");
 
@@ -296,6 +299,9 @@ namespace FileTrackingSystem.DAL.Migrations
 
                     b.Property<int>("jobTypeId")
                         .HasColumnType("int");
+
+                    b.Property<string>("remarks")
+                        .HasColumnType("text");
 
                     b.Property<int>("status")
                         .HasColumnType("int");
@@ -422,6 +428,9 @@ namespace FileTrackingSystem.DAL.Migrations
                     b.Property<string>("payId")
                         .HasColumnType("text");
 
+                    b.Property<string>("remarks")
+                        .HasColumnType("text");
+
                     b.Property<int>("status")
                         .HasColumnType("int");
 
@@ -469,8 +478,8 @@ namespace FileTrackingSystem.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("Code")
-                        .HasColumnType("int");
+                    b.Property<string>("Code")
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .HasColumnType("text");

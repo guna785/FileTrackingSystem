@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FileTrackingSystem.DAL.Migrations.Identity
 {
     [DbContext(typeof(IdentityContext))]
-    [Migration("20210817170646_InitialMigration")]
+    [Migration("20210821024823_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

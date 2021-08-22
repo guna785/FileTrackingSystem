@@ -14,10 +14,13 @@ namespace FileTrackingSystem.Web.Controllers
     {
         private readonly IInsert _insert;
         private readonly ILogger<InsertDataController> _logger;
-        public InsertDataController(IInsert insert, ILogger<InsertDataController> logger)
+
+        private readonly IUrlHelper _helper;
+        public InsertDataController(IInsert insert, ILogger<InsertDataController> logger, IUrlHelper helper)
         {
             _insert = insert;
             _logger = logger;
+            _helper = helper;
         }
 
         [HttpPost]

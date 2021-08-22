@@ -140,11 +140,11 @@
                                     Action
                                     </button>
                                     <div class="dropdown-menu">
-                                        <a class="dropdown-item" onclick="ChangeJobStatus(`+ row.id +`);">Change Job Status</a>
-                                        <a class="dropdown-item" onclick="PrintInvoice(`+ row.id +`);">Print Invoice</a>
-                                        <a class="dropdown-item" href="/Home/DownloadInvoice/`+row.id+`">Download Invoice</a>
-                                        <a class="dropdown-item" onclick="JobHistory(`+ row.id +`);">Job Histroy</a>
-                                        <a class="dropdown-item" onclick="CancelJob(`+ row.id +`);">Cancel JOb</a>
+                                        <a class="dropdown-item" onclick="ChangeJobStatus(${ row.id});">Change Job Status</a>
+                                        <a class="dropdown-item" onclick="PrintInvoice(${ row.id });">Print Invoice</a>
+                                        <a class="dropdown-item" href="/Home/DownloadInvoice/${row.id}">Download Invoice</a>
+                                        <a class="dropdown-item" onclick="JobHistory(${row.id});">Job Histroy</a>
+                                        <a class="dropdown-item" onclick="CancelJob(${row.id});">Cancel JOb</a>
                                     </div>
                             </div>`;
                     }

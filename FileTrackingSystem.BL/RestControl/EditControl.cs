@@ -24,12 +24,16 @@ namespace FileTrackingSystem.BL.RestControl
         private readonly IGenericDbService<Branch> _branch;
         private readonly UserManager<ApplicationUser> _user;
         private readonly RoleManager<ApplicationRole> _role;
+        private readonly IGenericDbService<Job> _job;
+        private readonly IGenericDbService<Invoice> _invoice;
+        private readonly IGenericDbService<Payment> _payment;
         private readonly ILogger<EditControl> _logger;
         private readonly IGenericDbService<Log> _log;
         public EditControl(IGenericDbService<Company> company, UserManager<ApplicationUser> user, ILogger<EditControl> logger,
             IGenericDbService<Log> log, IGenericDbService<Branch> branch, RoleManager<ApplicationRole> role,
             IGenericDbService<JobType> jbType, IGenericDbService<Client> client, IGenericDbService<DocumentRequired> docReq,
-            IGenericDbService<Document> doc)
+            IGenericDbService<Document> doc ,IGenericDbService<Job> job, IGenericDbService<Invoice> invoice,
+            IGenericDbService<Payment> payment)
         {
             _user = user;
             _company = company;
@@ -41,6 +45,40 @@ namespace FileTrackingSystem.BL.RestControl
             _role = role;
             _doc = doc;
             _docReq = docReq;
+            _job = job;
+            _invoice = invoice;
+            _payment = payment;
+        }
+
+        public async Task<bool> ChangeJobStatus(ChangeJobStatusSchema model, string user)
+        {
+            try
+            {
+                _logger.LogInformation("Job Data Edition Starts ....");
+                _logger.LogInformation(Newtonsoft.Json.JsonConvert.SerializeObject(model));
+                _logger.LogInformation("JOb Data Addition Starts ....");
+                _logger.LogInformation($"Checks Job Id for {model.Id} Exists ");
+                var jb = _job.AsQueryable().Where(x => x.Id == model.Id).FirstOrDefault();
+                if (jb != null)
+                {
+                    var usr = await _user.FindByNameAsync(model.UserId);
+                    jb.ApplicationUserId = usr.Id;
+                    jb.status = model.status;
+                    jb.remarks = model.comment;
+                    _job.Update(jb);
+                    _log.Create(MapperAction.CreateLog("Change Job Status", $"Job Status {jb.JbId} is Updated successfully  to {jb.status} by {user}", user, LogType.Event));
+                    _logger.LogInformation("Job Data Edition Done ....");
+                    return true;
+                }
+                _logger.LogError($"Job {model.Id} not Exoists....");
+                return false;
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+                return false;
+            }
+           
         }
 
         public async Task<bool> EditBranch(BranchSchema model, string user)

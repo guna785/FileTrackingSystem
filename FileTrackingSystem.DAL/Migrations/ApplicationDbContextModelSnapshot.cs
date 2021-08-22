@@ -241,6 +241,9 @@ namespace FileTrackingSystem.DAL.Migrations
                     b.Property<int>("jobId")
                         .HasColumnType("int");
 
+                    b.Property<string>("remarks")
+                        .HasColumnType("text");
+
                     b.Property<int>("status")
                         .HasColumnType("int");
 
@@ -294,6 +297,9 @@ namespace FileTrackingSystem.DAL.Migrations
 
                     b.Property<int>("jobTypeId")
                         .HasColumnType("int");
+
+                    b.Property<string>("remarks")
+                        .HasColumnType("text");
 
                     b.Property<int>("status")
                         .HasColumnType("int");
@@ -420,6 +426,9 @@ namespace FileTrackingSystem.DAL.Migrations
                     b.Property<string>("payId")
                         .HasColumnType("text");
 
+                    b.Property<string>("remarks")
+                        .HasColumnType("text");
+
                     b.Property<int>("status")
                         .HasColumnType("int");
 
@@ -467,8 +476,8 @@ namespace FileTrackingSystem.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("Code")
-                        .HasColumnType("int");
+                    b.Property<string>("Code")
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .HasColumnType("text");

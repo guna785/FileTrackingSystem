@@ -1,7 +1,9 @@
 ﻿using FileTrackingSystem.BL.Contract;
 using FileTrackingSystem.BL.Models;
 using FileTrackingSystem.DAL.Contract;
+using FileTrackingSystem.Models.Enums;
 using FileTrackingSystem.Models.Models;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,8 +21,10 @@ namespace FileTrackingSystem.BL.RestControl
         private readonly IGenericDbService<Invoice> _inv;
         private readonly IGenericDbService<Payment> _pay;
         private readonly IGenericDbService<StateCode> _codes;
+        private readonly UserManager<ApplicationUser> _user;
         public GetControl(IGenericDbService<Client> client, IGenericDbService<JobType> jbType, IGenericDbService<Company> company,
-            IGenericDbService<Job> job, IGenericDbService<Invoice> inv, IGenericDbService<Payment> pay, IGenericDbService<StateCode> codes)
+            IGenericDbService<Job> job, IGenericDbService<Invoice> inv, IGenericDbService<Payment> pay, IGenericDbService<StateCode> codes,
+            UserManager<ApplicationUser> user)
         {
             _client = client;
             _jbType = jbType;
@@ -29,10 +33,16 @@ namespace FileTrackingSystem.BL.RestControl
             _pay = pay;
             _job = job;
             _codes = codes;
+            _user = user;
         }
         public IQueryable<Client> GetAllClients()
         {
             return _client.AsQueryable();
+        }
+
+        public IQueryable<ApplicationUser> GetAllEmployees()
+        {
+            return _user.Users.Where(x => x.userType == UserType.User);
         }
 
         public InvoiceDocumentModel GetInvoiceDocument(int Id)

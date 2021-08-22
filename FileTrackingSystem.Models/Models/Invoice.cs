@@ -19,6 +19,7 @@ namespace FileTrackingSystem.Models.Models
         public double TotalAmount { get; set; }
         public double PaidAmount { get; set; }
         public double balanceAmount { get; set; }
+        public string remarks { get; set; }
         public IncoiceStatus status{ get; set; }
 
         public virtual IList<Payment> Payments { get; set; }

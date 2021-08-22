@@ -141,7 +141,18 @@
                 {
                     data: null,
                     render: function (data, type, row) {
-                        return '<a href="#" class="btn btn-primary  btn-sm checkbox-toggle" title="Edit" onclick="editJobType(\'' + row.id + '\');"><i class="fa fa-edit"></i></a>  <a class="btn btn-danger  btn-sm checkbox-toggle" onclick="delJobType(\'' + row.id + '\');" title="delete"><i class="fa fa-trash"></i></a>';
+                        return `<div class="btn-group">
+                                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
+                                        aria-haspopup="true" aria-expanded="false">
+                                    Action
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" onclick="PayInvoice(${row.id});">Change Job Status</a>
+                                        <a class="dropdown-item" onclick="PrintInvoice(${row.id});">Print Invoice</a>
+                                        <a class="dropdown-item" href="/Home/DownloadInvoice/${row.id}">Download Invoice</a>
+                                        <a class="dropdown-item" onclick="CancelJob(${row.id});">Cancel JOb</a>
+                                    </div>
+                            </div>`;
                     }
                 }
             ],

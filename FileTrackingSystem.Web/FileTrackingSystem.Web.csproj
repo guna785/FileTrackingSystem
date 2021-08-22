@@ -22,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="LogFiles\" />
     <Folder Include="wwwroot\ClientProofs\" />
     <Folder Include="wwwroot\JobDocuments\" />
   </ItemGroup>

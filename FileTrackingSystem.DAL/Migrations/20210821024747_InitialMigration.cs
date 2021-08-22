@@ -138,7 +138,7 @@ namespace FileTrackingSystem.DAL.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    Code = table.Column<int>(type: "int", nullable: false),
+                    Code = table.Column<string>(type: "text", nullable: true),
                     Name = table.Column<string>(type: "text", nullable: true),
                     createdAt = table.Column<DateTime>(type: "datetime", nullable: false)
                 },
@@ -206,6 +206,7 @@ namespace FileTrackingSystem.DAL.Migrations
                     status = table.Column<int>(type: "int", nullable: false),
                     CompletedTime = table.Column<DateTime>(type: "datetime", nullable: false),
                     createdBy = table.Column<int>(type: "int", nullable: false),
+                    remarks = table.Column<string>(type: "text", nullable: true),
                     CompanyId = table.Column<int>(type: "int", nullable: true),
                     createdAt = table.Column<DateTime>(type: "datetime", nullable: false)
                 },
@@ -247,6 +248,7 @@ namespace FileTrackingSystem.DAL.Migrations
                     TotalAmount = table.Column<double>(type: "double", nullable: false),
                     PaidAmount = table.Column<double>(type: "double", nullable: false),
                     balanceAmount = table.Column<double>(type: "double", nullable: false),
+                    remarks = table.Column<string>(type: "text", nullable: true),
                     status = table.Column<int>(type: "int", nullable: false),
                     createdAt = table.Column<DateTime>(type: "datetime", nullable: false)
                 },
@@ -331,6 +333,7 @@ namespace FileTrackingSystem.DAL.Migrations
                     companyId = table.Column<int>(type: "int", nullable: false),
                     ApplicationUserId = table.Column<int>(type: "int", nullable: false),
                     status = table.Column<int>(type: "int", nullable: false),
+                    remarks = table.Column<string>(type: "text", nullable: true),
                     createdAt = table.Column<DateTime>(type: "datetime", nullable: false)
                 },
                 constraints: table =>
